@@ -24,7 +24,6 @@ async function handleAdminLogin() {
 
     const email = document.getElementById('adminEmail').value.trim();
     const password = document.getElementById('adminPassword').value;
-
     const { error } = await supabaseAdmin.auth.signInWithPassword({ email, password });
 
     if (error) {
@@ -61,13 +60,8 @@ async function loadAdminDashboard() {
     return;
   }
 
-  const newCount = data.filter(item => item.status === 'new').length;
-  const contactedCount = data.filter(item => ['contacted','quoted'].includes(item.status)).length;
-  const bookedCount = data.filter(item => item.status === 'booked').length;
-
-  document.getElementById('statNew').textContent = newCount;
-  document.getElementById('statConversation').textContent = contactedCount;
-  document.getElementById('statBooked').textContent = bookedCount;
+  window.__imaniEnquiries = data;
+  renderStats(data);
 
   if (!data.length) {
     list.innerHTML = '<div class="admin-empty">No enquiries yet.</div>';
@@ -76,19 +70,20 @@ async function loadAdminDashboard() {
 
   list.innerHTML = data.map(item => {
     const date = new Date(item.created_at).toLocaleDateString('en-GB');
-    const venue = item.venue || 'Venue not provided';
-    const eventType = item.event_type || 'Event';
-    const phone = item.phone || '';
     return `<div class="enquiry-row">
-      <div><strong>${escapeHtml(item.name)}</strong><small>${escapeHtml(phone)} · ${date}</small></div>
-      <div>${escapeHtml(eventType)}<small>${escapeHtml(venue)}</small></div>
+      <div><strong>${escapeHtml(item.name)}</strong><small>${escapeHtml(item.phone || '')} · ${date}</small></div>
+      <div>${escapeHtml(item.event_type || 'Event')}<small>${escapeHtml(item.venue || 'Venue not provided')}</small></div>
       <div>${item.guest_count ? escapeHtml(String(item.guest_count)) + ' guests' : 'Guest count not provided'}<small>${escapeHtml(item.budget || 'Budget not provided')}</small></div>
       <div><span class="status-pill">${escapeHtml(item.status || 'new')}</span></div>
       <div><button class="admin-button secondary" type="button" onclick="showEnquiry(${item.id})">View</button></div>
     </div>`;
   }).join('');
+}
 
-  window.__imaniEnquiries = data;
+function renderStats(data) {
+  document.getElementById('statNew').textContent = data.filter(item => item.status === 'new').length;
+  document.getElementById('statConversation').textContent = data.filter(item => ['contacted','quoted'].includes(item.status)).length;
+  document.getElementById('statBooked').textContent = data.filter(item => item.status === 'booked').length;
 }
 
 function escapeHtml(value) {
@@ -99,20 +94,85 @@ function showEnquiry(id) {
   const item = (window.__imaniEnquiries || []).find(entry => entry.id === id);
   if (!item) return;
 
-  const details = [
-    `Name: ${item.name || ''}`,
-    `Phone: ${item.phone || ''}`,
-    `Email: ${item.email || ''}`,
-    `Event: ${item.event_type || ''}`,
-    `Event date: ${item.event_date || ''}`,
-    `Venue: ${item.venue || ''}`,
-    `Guests: ${item.guest_count || ''}`,
-    `Budget: ${item.budget || ''}`,
-    `Message: ${item.message || ''}`,
-    `Status: ${item.status || 'new'}`
-  ].join('\n');
+  let modal = document.getElementById('enquiryModal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'enquiryModal';
+    modal.className = 'enquiry-modal';
+    modal.innerHTML = `<div class="enquiry-modal-card">
+      <button class="modal-close" type="button" aria-label="Close" onclick="closeEnquiryModal()">×</button>
+      <div id="enquiryModalContent"></div>
+    </div>`;
+    document.body.appendChild(modal);
+    modal.addEventListener('click', event => {
+      if (event.target === modal) closeEnquiryModal();
+    });
+  }
 
-  alert(details);
+  const content = document.getElementById('enquiryModalContent');
+  content.innerHTML = `
+    <p class="eyebrow dark">Enquiry details</p>
+    <h2>${escapeHtml(item.name)}</h2>
+    <div class="detail-grid">
+      <div><span>Phone</span><strong>${escapeHtml(item.phone || 'Not provided')}</strong></div>
+      <div><span>Email</span><strong>${escapeHtml(item.email || 'Not provided')}</strong></div>
+      <div><span>Event</span><strong>${escapeHtml(item.event_type || 'Not provided')}</strong></div>
+      <div><span>Event date</span><strong>${escapeHtml(item.event_date || 'Not provided')}</strong></div>
+      <div><span>Venue</span><strong>${escapeHtml(item.venue || 'Not provided')}</strong></div>
+      <div><span>Guests</span><strong>${escapeHtml(item.guest_count || 'Not provided')}</strong></div>
+      <div><span>Budget</span><strong>${escapeHtml(item.budget || 'Not provided')}</strong></div>
+      <div><span>Received</span><strong>${new Date(item.created_at).toLocaleString('en-GB')}</strong></div>
+    </div>
+    <div class="message-box"><span>Customer message</span><p>${escapeHtml(item.message || 'No message provided.')}</p></div>
+    <div class="status-editor">
+      <label for="statusSelect">Status</label>
+      <select id="statusSelect">
+        ${['new','contacted','quoted','booked','closed'].map(status => `<option value="${status}" ${status === item.status ? 'selected' : ''}>${status.charAt(0).toUpperCase() + status.slice(1)}</option>`).join('')}
+      </select>
+      <button class="admin-button" id="saveStatusButton" type="button" onclick="saveEnquiryStatus(${item.id})">Save status</button>
+      <span class="status-save-note" id="statusSaveNote"></span>
+    </div>`;
+
+  modal.classList.add('open');
+}
+
+function closeEnquiryModal() {
+  const modal = document.getElementById('enquiryModal');
+  if (modal) modal.classList.remove('open');
+}
+
+async function saveEnquiryStatus(id) {
+  const select = document.getElementById('statusSelect');
+  const button = document.getElementById('saveStatusButton');
+  const note = document.getElementById('statusSaveNote');
+  if (!select || !button || !note) return;
+
+  button.disabled = true;
+  button.textContent = 'Saving...';
+  note.textContent = '';
+
+  const { error } = await supabaseAdmin
+    .from('enquiries')
+    .update({ status: select.value })
+    .eq('id', id);
+
+  if (error) {
+    note.textContent = 'Could not save. Please try again.';
+    button.disabled = false;
+    button.textContent = 'Save status';
+    return;
+  }
+
+  const item = (window.__imaniEnquiries || []).find(entry => entry.id === id);
+  if (item) item.status = select.value;
+  note.textContent = 'Saved';
+  button.textContent = 'Saved';
+  await loadAdminDashboard();
+
+  setTimeout(() => {
+    button.disabled = false;
+    button.textContent = 'Save status';
+  }, 1000);
 }
 
 async function signOutAdmin() {
