@@ -60,8 +60,9 @@ async function uploadGalleryImage(file) {
 
 async function addGalleryItem(event) {
   event.preventDefault();
+  const form = event.currentTarget;
   const note = document.getElementById('galleryFormNote');
-  const button = event.currentTarget.querySelector('button[type="submit"]');
+  const button = form.querySelector('button[type="submit"]');
   const imageFile = document.getElementById('galleryImage').files[0];
   button.disabled = true;
   button.textContent = imageFile ? 'Uploading...' : 'Adding...';
@@ -79,7 +80,7 @@ async function addGalleryItem(event) {
     };
     const { error } = await supabaseGallery.from('gallery_items').insert(payload);
     if (error) throw error;
-    event.currentTarget.reset();
+    form.reset();
     note.textContent = imagePath ? 'Photo and gallery item added successfully.' : 'Gallery item added successfully.';
     await loadGalleryItems();
   } catch (error) {
