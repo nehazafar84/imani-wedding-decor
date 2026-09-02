@@ -12,6 +12,17 @@ function publicGalleryImageUrl(path) {
   return publicGalleryClient.storage.from('gallery').getPublicUrl(path).data.publicUrl;
 }
 
+function safePublicVideoUrl(value) {
+  const raw = String(value || '').trim();
+  if (!raw) return '';
+  try {
+    const url = new URL(raw);
+    return ['http:', 'https:'].includes(url.protocol) ? url.href : '';
+  } catch {
+    return '';
+  }
+}
+
 async function loadPublicGallery() {
   const container = document.getElementById('liveGallery');
   if (!container) return;
@@ -35,11 +46,12 @@ async function loadPublicGallery() {
 
   container.innerHTML = data.map((item, index) => {
     const imageUrl = publicGalleryImageUrl(item.image_path);
+    const videoUrl = safePublicVideoUrl(item.video_url);
     const image = imageUrl
       ? `<img src="${publicGalleryEscape(imageUrl)}" alt="${publicGalleryEscape(item.alt_text || item.title || 'Imani Events wedding décor')}" loading="lazy" decoding="async">`
       : '<div class="public-gallery-placeholder">Image coming soon</div>';
-    const video = item.video_url
-      ? `<a class="public-gallery-video" href="${publicGalleryEscape(item.video_url)}" target="_blank" rel="noopener noreferrer" aria-label="View video for ${publicGalleryEscape(item.title || 'this gallery item')}">View video</a>`
+    const video = videoUrl
+      ? `<a class="public-gallery-video" href="${publicGalleryEscape(videoUrl)}" target="_blank" rel="noopener noreferrer" aria-label="View video for ${publicGalleryEscape(item.title || 'this gallery item')}">View video</a>`
       : '';
 
     return `<article class="public-gallery-card ${index % 5 === 0 ? 'featured' : ''}">
