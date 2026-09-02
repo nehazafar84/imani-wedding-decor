@@ -3,6 +3,8 @@ const supabaseGallery = window.supabase.createClient(
   'sb_publishable_-sZ0I8Ymjtc67J23oUyMhw_EnqXUyFm'
 );
 
+let galleryItemsCache = [];
+
 function galleryEscape(value) {
   return String(value ?? '').replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
 }
@@ -30,18 +32,25 @@ async function loadGalleryItems() {
     list.innerHTML = '<div class="admin-empty">Could not load gallery items.</div>';
     return;
   }
-  count.textContent = `${data.length} ${data.length === 1 ? 'item' : 'items'}`;
-  if (!data.length) {
+  galleryItemsCache = data || [];
+  count.textContent = `${galleryItemsCache.length} ${galleryItemsCache.length === 1 ? 'item' : 'items'}`;
+  if (!galleryItemsCache.length) {
     list.innerHTML = '<div class="admin-empty">No gallery items yet. Add your first item above.</div>';
     return;
   }
-  list.innerHTML = data.map(item => {
+  list.innerHTML = galleryItemsCache.map((item,index) => {
     const imageUrl = galleryImageUrl(item.image_path);
     return `<article class="gallery-admin-card">
       <div class="gallery-admin-preview"${imageUrl ? ` style="background-image:url('${galleryEscape(imageUrl)}');background-size:cover;background-position:center"` : ''}>${imageUrl ? '' : '<span>Photo to be added</span>'}</div>
       <div class="gallery-admin-copy"><div class="gallery-card-head"><div><small>${galleryEscape(item.category)}</small><strong>${galleryEscape(item.title)}</strong></div><span class="status-pill">${item.is_published ? 'Published' : 'Draft'}</span></div>
       ${item.video_url ? '<p>Video link saved</p>' : '<p>No video link</p>'}
-      <div class="gallery-card-actions"><button class="admin-button secondary" type="button" onclick="toggleGalleryPublish(${item.id},${!item.is_published})">${item.is_published ? 'Unpublish' : 'Publish'}</button><button class="admin-button gallery-delete" type="button" onclick="deleteGalleryItem(${item.id},'${galleryEscape(item.image_path || '')}')">Delete</button></div></div>
+      <div class="gallery-card-actions">
+        <button class="admin-button secondary" type="button" onclick="editGalleryItem('${item.id}')">Edit</button>
+        <button class="admin-button secondary" type="button" onclick="moveGalleryItem('${item.id}',-1)" ${index===0?'disabled':''}>↑ Up</button>
+        <button class="admin-button secondary" type="button" onclick="moveGalleryItem('${item.id}',1)" ${index===galleryItemsCache.length-1?'disabled':''}>↓ Down</button>
+        <button class="admin-button secondary" type="button" onclick="toggleGalleryPublish('${item.id}',${!item.is_published})">${item.is_published ? 'Unpublish' : 'Publish'}</button>
+        <button class="admin-button gallery-delete" type="button" onclick="deleteGalleryItem('${item.id}','${galleryEscape(item.image_path || '')}')">Delete</button>
+      </div></div>
     </article>`;
   }).join('');
 }
@@ -63,33 +72,85 @@ async function addGalleryItem(event) {
   const form = event.currentTarget;
   const note = document.getElementById('galleryFormNote');
   const button = form.querySelector('button[type="submit"]');
+  const editId = document.getElementById('galleryEditId').value;
   const imageFile = document.getElementById('galleryImage').files[0];
   button.disabled = true;
-  button.textContent = imageFile ? 'Uploading...' : 'Adding...';
-  note.textContent = imageFile ? 'Uploading your photo securely...' : 'Saving gallery item...';
-  let imagePath = null;
+  button.textContent = editId ? 'Saving...' : (imageFile ? 'Uploading...' : 'Adding...');
+  note.textContent = editId ? 'Saving changes...' : (imageFile ? 'Uploading your photo securely...' : 'Saving gallery item...');
+  let newImagePath = null;
   try {
-    imagePath = await uploadGalleryImage(imageFile);
+    if (imageFile) newImagePath = await uploadGalleryImage(imageFile);
     const payload = {
       title: document.getElementById('galleryTitle').value.trim(),
       category: document.getElementById('galleryCategory').value,
-      image_path: imagePath,
       video_url: document.getElementById('galleryVideo').value.trim() || null,
       alt_text: document.getElementById('galleryAlt').value.trim() || null,
-      is_published: document.getElementById('galleryPublished').checked
+      is_published: document.getElementById('galleryPublished').checked,
+      updated_at: new Date().toISOString()
     };
-    const { error } = await supabaseGallery.from('gallery_items').insert(payload);
-    if (error) throw error;
-    form.reset();
-    note.textContent = imagePath ? 'Photo and gallery item added successfully.' : 'Gallery item added successfully.';
+    if (newImagePath) payload.image_path = newImagePath;
+    if (editId) {
+      const oldItem = galleryItemsCache.find(item => item.id === editId);
+      const { error } = await supabaseGallery.from('gallery_items').update(payload).eq('id', editId);
+      if (error) throw error;
+      if (newImagePath && oldItem?.image_path) await supabaseGallery.storage.from('gallery').remove([oldItem.image_path]);
+      note.textContent = 'Gallery item updated successfully.';
+    } else {
+      payload.image_path = newImagePath;
+      payload.sort_order = galleryItemsCache.length;
+      const { error } = await supabaseGallery.from('gallery_items').insert(payload);
+      if (error) throw error;
+      note.textContent = newImagePath ? 'Photo and gallery item added successfully.' : 'Gallery item added successfully.';
+    }
+    resetGalleryForm();
     await loadGalleryItems();
   } catch (error) {
-    if (imagePath) await supabaseGallery.storage.from('gallery').remove([imagePath]);
-    note.textContent = error.message || 'Could not add item. Please try again.';
+    if (newImagePath) await supabaseGallery.storage.from('gallery').remove([newImagePath]);
+    note.textContent = error.message || 'Could not save item. Please try again.';
   } finally {
     button.disabled = false;
     button.textContent = 'Add item';
   }
+}
+
+function editGalleryItem(id) {
+  const item = galleryItemsCache.find(row => row.id === id);
+  if (!item) return;
+  document.getElementById('galleryEditId').value = item.id;
+  document.getElementById('galleryTitle').value = item.title || '';
+  document.getElementById('galleryCategory').value = item.category || 'Other';
+  document.getElementById('galleryVideo').value = item.video_url || '';
+  document.getElementById('galleryAlt').value = item.alt_text || '';
+  document.getElementById('galleryPublished').checked = !!item.is_published;
+  document.getElementById('galleryFormTitle').textContent = 'Edit gallery item';
+  document.getElementById('gallerySubmitButton').textContent = 'Save changes';
+  document.getElementById('galleryCancelEdit').hidden = false;
+  document.getElementById('galleryFormNote').textContent = 'Change the details below. Choose a new photo only if you want to replace the current one.';
+  document.getElementById('galleryTitle').focus();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function resetGalleryForm() {
+  const form = document.getElementById('galleryAdminForm');
+  form.reset();
+  document.getElementById('galleryEditId').value = '';
+  document.getElementById('galleryFormTitle').textContent = 'Add gallery item';
+  document.getElementById('gallerySubmitButton').textContent = 'Add item';
+  document.getElementById('galleryCancelEdit').hidden = true;
+}
+
+async function moveGalleryItem(id, direction) {
+  const index = galleryItemsCache.findIndex(item => item.id === id);
+  const targetIndex = index + direction;
+  if (index < 0 || targetIndex < 0 || targetIndex >= galleryItemsCache.length) return;
+  const current = galleryItemsCache[index];
+  const target = galleryItemsCache[targetIndex];
+  const currentOrder = Number.isFinite(current.sort_order) ? current.sort_order : index;
+  const targetOrder = Number.isFinite(target.sort_order) ? target.sort_order : targetIndex;
+  const { error: firstError } = await supabaseGallery.from('gallery_items').update({sort_order: targetOrder}).eq('id', current.id);
+  if (firstError) return;
+  const { error: secondError } = await supabaseGallery.from('gallery_items').update({sort_order: currentOrder}).eq('id', target.id);
+  if (!secondError) loadGalleryItems();
 }
 
 async function toggleGalleryPublish(id, value) {
@@ -111,4 +172,8 @@ async function signOutAdmin() {
 }
 
 document.getElementById('galleryAdminForm')?.addEventListener('submit', addGalleryItem);
+document.getElementById('galleryCancelEdit')?.addEventListener('click', () => {
+  resetGalleryForm();
+  document.getElementById('galleryFormNote').textContent = 'You can add the details now, with or without a photo.';
+});
 loadGalleryItems();
