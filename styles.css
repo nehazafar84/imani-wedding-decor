@@ -23,7 +23,7 @@ button { font: inherit; }
 .menu-toggle { display: none; border: 0; background: transparent; width: 34px; height: 34px; }
 .menu-toggle span { display: block; width: 25px; height: 1px; background: #fff; margin: 7px auto; }
 
-.hero { position: relative; min-height: 100svh; color: #fff; display: flex; align-items: flex-end; padding: 0 7vw 14vh; background: linear-gradient(110deg, #4f443b 0%, #807164 38%, #a99b8d 65%, #64584e 100%); overflow: hidden; }
+.hero { position: relative; min-height: 100svh; color: #fff; display: flex; align-items: flex-end; padding: 0 7vw 14vh; background: #3b2927 url("assets/home/hero-ballroom.webp") center 42% / cover no-repeat; overflow: hidden; }
 .hero::before { content: ""; position: absolute; inset: 0; background: radial-gradient(circle at 72% 42%, rgba(255,244,223,.35), transparent 22%), radial-gradient(circle at 75% 70%, rgba(250,239,221,.18), transparent 28%); }
 .hero::after { content: ""; position: absolute; width: 44vw; height: 70vh; right: 8vw; bottom: 4vh; border: 1px solid rgba(255,255,255,.22); border-radius: 50% 50% 4% 4%; transform: rotate(-3deg); }
 .hero-overlay { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(20,15,12,.56), rgba(20,15,12,.05) 70%), linear-gradient(0deg, rgba(20,15,12,.38), transparent 45%); }
@@ -56,11 +56,11 @@ h1 em, h2 em { font-weight: 500; }
 .service-card:nth-child(even) { margin-top: 100px; }
 .service-image { height: 550px; background-size: cover; background-position: center; position: relative; overflow: hidden; }
 .service-image::after, .gallery-item::after { content: ""; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(30,20,15,.28), transparent 55%); }
-.image-stage { background: linear-gradient(145deg,#776859,#d8c8b6 52%,#897666); }
-.image-nikkah { background: linear-gradient(35deg,#c8b7a0,#f0e6d6 50%,#8d7c68); }
-.image-mehndi { background: linear-gradient(145deg,#745f3e,#c39b58 50%,#6e503b); }
-.image-table { background: linear-gradient(35deg,#594b40,#b8a995 50%,#e1d8cb); }
-.service-image::before { content: ""; position: absolute; z-index: 1; width: 58%; height: 70%; left: 21%; top: 14%; border: 1px solid rgba(255,255,255,.5); border-radius: 50% 50% 8px 8px; box-shadow: 0 0 90px rgba(255,245,225,.24); }
+.image-stage { background-image: url("assets/home/stage-luxury.webp"); }
+.image-nikkah { background-image: url("assets/home/nikkah-outdoor.webp"); }
+.image-mehndi { background-image: url("assets/home/mehndi-floral.webp"); }
+.image-table { background-image: url("assets/home/table-floral.webp"); }
+.service-image::before { content: none; }
 .service-info { display: grid; grid-template-columns: 45px 1fr; margin-top: 22px; }
 .service-info span { font-size: .65rem; color: #8a7d70; }
 .service-info h3 { font-family: "Playfair Display", serif; font-size: 1.8rem; font-weight: 500; }
