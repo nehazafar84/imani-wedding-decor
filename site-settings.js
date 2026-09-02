@@ -8,6 +8,14 @@ function normalizeWhatsAppNumber(value){
   return clean;
 }
 
+function applyBackgroundImage(selector,value){
+  const element=document.querySelector(selector);
+  const url=String(value||'').trim();
+  if(!element||!url)return;
+  element.style.backgroundImage=`url("${url.replace(/"/g,'%22')}")`;
+  element.classList.add('has-photo');
+}
+
 async function loadPublicSettings(){
   const {data,error}=await publicSettingsClient.from('site_settings').select('key,value');
   if(error||!data)return;
@@ -17,11 +25,7 @@ async function loadPublicSettings(){
   if(phone&&settings.business_phone){
     phone.textContent=`WhatsApp — ${settings.business_phone}`;
     const clean=normalizeWhatsAppNumber(settings.business_phone);
-    if(clean){
-      phone.href=`https://wa.me/${clean}`;
-      phone.target='_blank';
-      phone.rel='noopener';
-    }
+    if(clean){phone.href=`https://wa.me/${clean}`;phone.target='_blank';phone.rel='noopener';}
   }
 
   const email=document.querySelector('[data-setting="business_email"]');
@@ -33,6 +37,12 @@ async function loadPublicSettings(){
   if(instagram&&settings.instagram_url){instagram.href=settings.instagram_url;instagram.hidden=false;}
   const facebook=document.querySelector('[data-setting="facebook_url"]');
   if(facebook&&settings.facebook_url){facebook.href=settings.facebook_url;facebook.hidden=false;}
+
+  applyBackgroundImage('.hero',settings.home_hero_image);
+  applyBackgroundImage('.image-stage',settings.home_stage_image);
+  applyBackgroundImage('.image-nikkah',settings.home_nikkah_image);
+  applyBackgroundImage('.image-mehndi',settings.home_mehndi_image);
+  applyBackgroundImage('.image-table',settings.home_table_image);
 }
 
 loadPublicSettings();
