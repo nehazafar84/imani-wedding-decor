@@ -15,7 +15,7 @@ button { font: inherit; }
 
 .site-header { position: absolute; z-index: 20; top: 0; left: 0; width: 100%; padding: 26px 5vw; display: flex; align-items: center; justify-content: space-between; color: #fff; border-bottom: 1px solid rgba(255,255,255,.22); }
 .brand { display: flex; align-items: center; gap: 13px; letter-spacing: .18em; font-size: .78rem; font-weight: 600; }
-.brand-mark { width: 38px; height: 38px; border: 1px solid currentColor; border-radius: 50%; display: grid; place-items: center; font-family: "Playfair Display", serif; font-style: italic; letter-spacing: 0; font-size: .9rem; }
+.brand-mark { width: 48px; height: 48px; flex: 0 0 48px; display: block; overflow: hidden; color: transparent; font-size: 0; background: url("assets/imani-monogram.png") center / contain no-repeat; filter: drop-shadow(0 1px 1px rgba(0,0,0,.16)); }
 .main-nav { display: flex; align-items: center; gap: 32px; font-size: .78rem; letter-spacing: .06em; }
 .main-nav a { transition: opacity .25s; }
 .main-nav a:hover { opacity: .65; }
