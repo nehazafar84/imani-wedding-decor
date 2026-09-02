@@ -3,20 +3,29 @@ const supabaseAdmin = window.supabase.createClient(
   'sb_publishable_-sZ0I8Ymjtc67J23oUyMhw_EnqXUyFm'
 );
 
+async function adminLandingPage(session) {
+  if (!session?.user?.id) return 'admin-login.html';
+  const { data: profile } = await supabaseAdmin.from('admin_profiles').select('role,is_active').eq('user_id', session.user.id).maybeSingle();
+  if (!profile?.is_active) return 'admin-login.html';
+  return profile.role === 'team' ? 'admin-calendar.html' : 'admin-dashboard.html';
+}
+
 async function handleAdminLogin() {
   const form = document.getElementById('adminLogin');
   if (!form) return;
   const note = document.getElementById('loginNote');
   const button = form.querySelector('button[type="submit"]');
   const { data: sessionData } = await supabaseAdmin.auth.getSession();
-  if (sessionData.session) { window.location.href = 'admin.html'; return; }
+  if (sessionData.session) { window.location.href = await adminLandingPage(sessionData.session); return; }
   form.addEventListener('submit', async (event) => {
     event.preventDefault(); button.disabled = true; button.textContent = 'Signing in...'; note.textContent = 'Checking your account...';
     const email = document.getElementById('adminEmail').value.trim();
     const password = document.getElementById('adminPassword').value;
-    const { error } = await supabaseAdmin.auth.signInWithPassword({ email, password });
+    const { data, error } = await supabaseAdmin.auth.signInWithPassword({ email, password });
     if (error) { note.textContent = 'Email or password is incorrect. Please try again.'; button.disabled = false; button.textContent = 'Sign in'; return; }
-    note.textContent = 'Login successful. Opening dashboard...'; window.location.href = 'admin.html';
+    const destination = await adminLandingPage(data.session);
+    if (destination === 'admin-login.html') { await supabaseAdmin.auth.signOut(); note.textContent = 'This account is not active. Please contact the owner.'; button.disabled = false; button.textContent = 'Sign in'; return; }
+    note.textContent = 'Login successful. Opening your portal...'; window.location.href = destination;
   });
 }
 
@@ -49,6 +58,8 @@ async function loadAdminDashboard() {
   const list = document.getElementById('enquiryList'); if (!list) return;
   const { data: sessionData } = await supabaseAdmin.auth.getSession();
   if (!sessionData.session) { window.location.href = 'admin-login.html'; return; }
+  const destination = await adminLandingPage(sessionData.session);
+  if (destination === 'admin-calendar.html') { window.location.href = destination; return; }
   const { data, error } = await supabaseAdmin.from('enquiries').select('id,created_at,name,phone,email,event_type,event_date,venue,guest_count,budget,message,status').order('created_at', { ascending: false });
   if (error) { list.innerHTML = '<div class="admin-empty">Could not load enquiries. Please refresh.</div>'; return; }
   window.__imaniEnquiries = data || []; renderStats(window.__imaniEnquiries); renderEnquiries();
