@@ -25,11 +25,11 @@ async function loadPublicSettings(){
   if(phone&&settings.business_phone){
     phone.textContent=`WhatsApp — ${settings.business_phone}`;
     const clean=normalizeWhatsAppNumber(settings.business_phone);
-    if(clean){phone.href=`https://wa.me/${clean}`;phone.target='_blank';phone.rel='noopener';}
+    if(clean){phone.href=`https://wa.me/${clean}`;phone.target='_blank';phone.rel='noopener';phone.hidden=false;}
   }
 
   const email=document.querySelector('[data-setting="business_email"]');
-  if(email&&settings.business_email){email.textContent=`Email — ${settings.business_email}`;email.href=`mailto:${settings.business_email}`;}
+  if(email&&settings.business_email){email.textContent=`Email — ${settings.business_email}`;email.href=`mailto:${settings.business_email}`;email.hidden=false;}
 
   document.querySelectorAll('[data-setting="business_location"]').forEach(el=>{if(settings.business_location)el.textContent=settings.business_location;});
 
