@@ -1,5 +1,13 @@
 const publicSettingsClient=window.supabase.createClient('https://lgdhudhsorazcjhtisrs.supabase.co','sb_publishable_-sZ0I8Ymjtc67J23oUyMhw_EnqXUyFm');
 
+function normalizeWhatsAppNumber(value){
+  let clean=String(value||'').replace(/[^0-9]/g,'');
+  if(!clean)return'';
+  if(clean.startsWith('0044'))clean=clean.slice(2);
+  if(clean.startsWith('0'))clean=`44${clean.slice(1)}`;
+  return clean;
+}
+
 async function loadPublicSettings(){
   const {data,error}=await publicSettingsClient.from('site_settings').select('key,value');
   if(error||!data)return;
@@ -8,10 +16,12 @@ async function loadPublicSettings(){
   const phone=document.querySelector('[data-setting="business_phone"]');
   if(phone&&settings.business_phone){
     phone.textContent=`WhatsApp — ${settings.business_phone}`;
-    const clean=settings.business_phone.replace(/[^0-9]/g,'');
-    phone.href=`https://wa.me/${clean}`;
-    phone.target='_blank';
-    phone.rel='noopener';
+    const clean=normalizeWhatsAppNumber(settings.business_phone);
+    if(clean){
+      phone.href=`https://wa.me/${clean}`;
+      phone.target='_blank';
+      phone.rel='noopener';
+    }
   }
 
   const email=document.querySelector('[data-setting="business_email"]');
