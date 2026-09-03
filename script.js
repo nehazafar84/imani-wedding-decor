@@ -63,3 +63,12 @@ if ('IntersectionObserver' in window) {
 
 const year = document.getElementById('year');
 if (year) year.textContent = new Date().getFullYear();
+
+document.querySelectorAll('.site-footer').forEach((footer) => {
+  if (footer.querySelector('.footer-contact')) return;
+  const contact = document.createElement('div');
+  contact.className = 'footer-contact';
+  contact.setAttribute('aria-label', 'Contact Imani Events');
+  contact.innerHTML = '<a href="https://wa.me/447967962340" target="_blank" rel="noopener"><span>WhatsApp</span><strong>+44 7967 962340</strong></a><a href="mailto:info@imanievents.co.uk"><span>Email</span><strong>info@imanievents.co.uk</strong></a><a href="https://www.instagram.com/imanieventsuk/" target="_blank" rel="noopener"><span>Instagram</span><strong>@imanieventsuk ↗</strong></a>';
+  footer.querySelector('.footer-bottom')?.before(contact);
+});
