@@ -26,8 +26,8 @@ button { font: inherit; }
 .hero { position: relative; min-height: 100svh; color: #fff; display: flex; align-items: flex-end; padding: 0 7vw 14vh; background: #3b2927 url("assets/home/hero-ballroom.webp") center 42% / cover no-repeat; overflow: hidden; }
 .hero::before { content: ""; position: absolute; inset: 0; background: radial-gradient(circle at 72% 42%, rgba(255,244,223,.35), transparent 22%), radial-gradient(circle at 75% 70%, rgba(250,239,221,.18), transparent 28%); }
 .hero::after { content: ""; position: absolute; width: 44vw; height: 70vh; right: 8vw; bottom: 4vh; border: 1px solid rgba(255,255,255,.22); border-radius: 50% 50% 4% 4%; transform: rotate(-3deg); }
-.hero-overlay { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(20,15,12,.56), rgba(20,15,12,.05) 70%), linear-gradient(0deg, rgba(20,15,12,.38), transparent 45%); }
-.hero-content { position: relative; z-index: 2; max-width: 850px; }
+.hero-overlay { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(20,15,12,.72) 0%, rgba(20,15,12,.34) 45%, rgba(20,15,12,.12) 74%), linear-gradient(0deg, rgba(20,15,12,.48), transparent 52%); }
+.hero-content { position: relative; z-index: 2; max-width: 1100px; }\n.hero h1 { max-width: 1100px; font-size: clamp(3.25rem, 6vw, 6.4rem); text-wrap: balance; }
 .eyebrow { text-transform: uppercase; letter-spacing: .22em; font-size: .68rem; font-weight: 500; margin-bottom: 22px; }
 .eyebrow.dark { color: #77695c; }
 h1, h2, blockquote { font-family: "Playfair Display", serif; font-weight: 500; line-height: .98; }
