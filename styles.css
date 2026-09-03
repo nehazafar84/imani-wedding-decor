@@ -231,12 +231,12 @@ h1 em, h2 em { font-weight: 500; }
 .reveal.visible { opacity: 1; transform: none; }
 
 @media (max-width: 800px) {
-  .site-header { padding: 20px 5vw; }
+  .site-header { padding: 20px 5vw; backdrop-filter: none; -webkit-backdrop-filter: none; }
   .floating-whatsapp { right: 14px; bottom: 76px; min-height: 48px; padding: 6px 14px 6px 6px; }
   .floating-whatsapp > span { width: 34px; height: 34px; }
   .floating-whatsapp strong { font-size: .7rem; }
-  .main-nav { position: absolute; z-index: 21; top: 0; left: 0; width: 100vw; height: 100vh; height: 100dvh; padding: 110px 7vw calc(92px + env(safe-area-inset-bottom)); background: linear-gradient(145deg,#171411 0%,#29221d 100%); flex-direction: column; align-items: stretch; justify-content: center; gap: 0; font-family: "Playfair Display", serif; font-size: clamp(1.75rem,8vw,2.35rem); transform: translateX(100%); visibility: hidden; pointer-events: none; transition: transform .38s cubic-bezier(.22,.75,.25,1),visibility 0s linear .38s; }
-  .main-nav.open { transform: none; visibility: visible; pointer-events: auto; transition-delay: 0s; }
+  .main-nav { position: fixed; z-index: 21; inset: 0; width: 100%; height: 100vh; height: 100dvh; padding: 110px 7vw calc(92px + env(safe-area-inset-bottom)); background: linear-gradient(145deg,#171411 0%,#29221d 100%); flex-direction: column; align-items: stretch; justify-content: center; gap: 0; font-family: "Playfair Display", serif; font-size: clamp(1.75rem,8vw,2.35rem); opacity: 0; visibility: hidden; pointer-events: none; transition: opacity .28s ease,visibility 0s linear .28s; }
+  .main-nav.open { opacity: 1; visibility: visible; pointer-events: auto; transition-delay: 0s; }
   .main-nav a { width: 100%; padding: 15px 0; border-radius: 0; border-bottom: 1px solid rgba(255,255,255,.13); text-shadow: none; }
   .main-nav a:first-child { border-top: 1px solid rgba(255,255,255,.13); }
   .nav-cta { justify-content: center; width: 100% !important; min-height: 52px; margin-top: 28px; padding: 14px 18px !important; border: 1px solid #c9a55c !important; font-family: "DM Sans", sans-serif; font-size: .76rem; text-align: center; text-transform: uppercase; letter-spacing: .14em; }
