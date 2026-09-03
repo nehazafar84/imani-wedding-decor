@@ -46,6 +46,14 @@ h1 em, h2 em { font-weight: 500; }
 .hero-bottom { position: absolute; z-index: 2; right: 5vw; bottom: 3.5vh; display: flex; gap: 18px; font-size: .62rem; text-transform: uppercase; letter-spacing: .13em; color: rgba(255,255,255,.65); }
 
 .section-pad { padding: 120px 7vw; }
+.trust-bar { position: relative; z-index: 3; background: #171513; color: #fff; border-top: 1px solid rgba(255,255,255,.12); border-bottom: 1px solid rgba(255,255,255,.12); }
+.trust-bar-inner { display: grid; grid-template-columns: repeat(4, 1fr); max-width: 1600px; margin: 0 auto; padding: 0 5vw; }
+.trust-item { position: relative; min-height: 138px; padding: 30px 3vw; display: flex; flex-direction: column; justify-content: center; border-right: 1px solid rgba(255,255,255,.13); }
+.trust-item:first-child { border-left: 1px solid rgba(255,255,255,.13); }
+.trust-item > span { position: absolute; top: 17px; right: 18px; color: #b99b64; font-size: .58rem; letter-spacing: .16em; }
+.trust-item strong { font-family: "Playfair Display", serif; font-size: clamp(1.3rem, 1.8vw, 2rem); font-weight: 500; line-height: 1.1; }
+.trust-item small { margin-top: 8px; color: rgba(255,255,255,.56); font-size: .66rem; letter-spacing: .05em; }
+
 .intro { display: grid; grid-template-columns: .7fr 2fr; gap: 8vw; background: var(--paper); }
 .intro-label { font-family: "Playfair Display", serif; font-style: italic; color: #897b6e; font-size: 1.15rem; }
 .intro-copy { max-width: 900px; }
@@ -150,6 +158,10 @@ h1 em, h2 em { font-weight: 500; }
   h1 { font-size: clamp(3.1rem, 14vw, 5rem); }
   .hero-bottom { left: 6vw; right: auto; gap: 9px; flex-wrap: wrap; }
   .section-pad { padding: 85px 6vw; }
+  .trust-bar-inner { grid-template-columns: repeat(2, 1fr); padding: 0; }
+  .trust-item { min-height: 120px; padding: 27px 7vw; }
+  .trust-item:nth-child(odd) { border-left: 0; }
+  .trust-item:nth-child(-n+2) { border-bottom: 1px solid rgba(255,255,255,.13); }
   .intro, .audience, .quote-section { grid-template-columns: 1fr; }
   .intro { gap: 35px; }
   .intro-copy > p:last-child { margin-left: 0; }
