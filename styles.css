@@ -130,10 +130,10 @@ h1 em, h2 em { font-weight: 500; }
 .occasion-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 35px; }
 .occasion-list span { border: 1px solid rgba(27,25,23,.22); padding: 8px 13px; font-size: .66rem; text-transform: uppercase; letter-spacing: .1em; }
 
-.areas { position: relative; isolation: isolate; overflow: hidden; padding: 90px 7vw; min-height: 680px; display: flex; align-items: center; justify-content: flex-end; background: #4a4038 url("assets/home/cardiff-castle.webp") center center / cover no-repeat; }
+.areas { position: relative; isolation: isolate; overflow: hidden; padding: 90px 7vw; min-height: 620px; display: flex; align-items: center; justify-content: flex-end; background: #4a4038 url("assets/home/cardiff-castle-wide.webp") center center / cover no-repeat; }
 .areas::before { content: ""; position: absolute; z-index: -1; inset: 0; background: linear-gradient(90deg, rgba(20,16,13,.12) 0%, rgba(20,16,13,.2) 42%, rgba(20,16,13,.62) 100%); }
-.areas-card { background: rgba(24,20,17,.9); color: #fff; width: min(620px, 100%); padding: 70px; border: 1px solid rgba(255,255,255,.12); box-shadow: 0 28px 70px rgba(15,11,9,.25); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); }
-.areas-card h2 { font-size: clamp(2.6rem, 4.5vw, 4.6rem); margin-bottom: 28px; }
+.areas-card { background: rgba(24,20,17,.9); color: #fff; width: min(570px, 100%); padding: 55px; border: 1px solid rgba(255,255,255,.12); box-shadow: 0 28px 70px rgba(15,11,9,.25); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); }
+.areas-card h2 { font-size: clamp(2.45rem, 3.8vw, 3.9rem); line-height: 1.02; margin-bottom: 24px; }
 .areas-card > p:not(.eyebrow) { color: rgba(255,255,255,.7); margin-bottom: 30px; font-weight: 300; }
 .text-link.light { color: #fff; }
 
@@ -255,9 +255,9 @@ h1 em, h2 em { font-weight: 500; }
   .gallery-grid { display: block; }
   .gallery-item { height: 420px; margin-bottom: 12px; }
   .gallery-item.tall { height: 520px; }
-  .areas { padding: 50px 5vw; min-height: 600px; background-position: 56% center; align-items: flex-end; }
+  .areas { padding: 42px 5vw; min-height: 640px; background-position: 38% center; align-items: flex-end; }
   .areas::before { background: linear-gradient(180deg, rgba(20,16,13,.08) 0%, rgba(20,16,13,.28) 42%, rgba(20,16,13,.72) 100%); }
-  .areas-card { padding: 45px 30px; }
+  .areas-card { padding: 38px 26px; }
   .quote-copy { padding: 85px 6vw 45px; }
   .quote-card { padding: 30px 6vw 85px; }
   .footer-links { justify-content: flex-start; flex-wrap: wrap; }
