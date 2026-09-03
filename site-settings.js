@@ -5,7 +5,8 @@ const verifiedContactSettings={
   business_phone:'+44 7967 962340',
   business_email:'info@imanievents.co.uk',
   business_location:'Unit 28, Pwll Mawr Business Park, Wentloog Road, Cardiff, CF3 1TH',
-  instagram_url:'https://www.instagram.com/imanieventsuk/'
+  instagram_url:'https://www.instagram.com/imanieventsuk/',
+  home_hero_image:'assets/home/hero-ballroom.webp'
 };
 
 function normalizeWhatsAppNumber(value){
