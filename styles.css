@@ -112,14 +112,17 @@ h1 em, h2 em { font-weight: 500; }
 .gallery-head h2 { font-size: clamp(3rem, 6vw, 6rem); }
 .gallery-head > p { max-width: 420px; color: #756c64; font-size: .85rem; }
 .gallery-grid { display: grid; grid-template-columns: 1.15fr .85fr; grid-template-rows: 390px 390px 460px; gap: 16px; }
-.gallery-item { position: relative; background-size: cover; overflow: hidden; }
-.gallery-one { grid-row: span 2; background: linear-gradient(140deg,#877568,#d4c2ae 48%,#63554a); }
-.gallery-two { background: linear-gradient(35deg,#b7a48f,#eee2d1,#6d5f52); }
-.gallery-three { background: linear-gradient(145deg,#55483f,#aa9987,#e1d3c1); }
-.gallery-four { grid-column: span 2; background: linear-gradient(110deg,#4b4139,#b6a28d 45%,#ddd1c3 70%,#66574b); }
-.gallery-item::before { content: ""; position: absolute; width: 36%; height: 70%; left: 32%; top: 12%; border: 1px solid rgba(255,255,255,.38); border-radius: 50% 50% 0 0; }
-.gallery-item figcaption { position: absolute; z-index: 2; left: 24px; right: 24px; bottom: 22px; color: #fff; display: flex; justify-content: space-between; font-family: "Playfair Display", serif; font-size: 1.15rem; }
-.gallery-item figcaption span { font-family: "DM Sans", sans-serif; text-transform: uppercase; letter-spacing: .14em; font-size: .55rem; align-self: end; }
+.gallery-item { position: relative; overflow: hidden; background: #675b52; }
+.gallery-one { grid-row: span 2; }
+.gallery-four { grid-column: span 2; }
+.gallery-item img { width: 100%; height: 100%; display: block; object-fit: cover; transition: transform .8s cubic-bezier(.2,.65,.3,1); }
+.gallery-item:hover img { transform: scale(1.035); }
+.gallery-shade { position: absolute; inset: 0; background: linear-gradient(0deg, rgba(18,13,10,.72), transparent 55%); transition: background .35s; }
+.gallery-item:hover .gallery-shade { background: linear-gradient(0deg, rgba(18,13,10,.8), transparent 62%); }
+.gallery-caption { position: absolute; z-index: 2; left: 26px; right: 26px; bottom: 24px; color: #fff; display: flex; justify-content: space-between; gap: 20px; align-items: end; }
+.gallery-caption strong { font-family: "Playfair Display", serif; font-size: 1.3rem; font-weight: 500; }
+.gallery-caption small { font-size: .58rem; letter-spacing: .13em; text-transform: uppercase; color: rgba(255,255,255,.72); }
+.gallery-item:focus-visible { outline: 3px solid #b89455; outline-offset: 4px; }
 .gallery-button { margin-top: 35px; }
 
 .audience { display: grid; grid-template-columns: 1.2fr 1fr; gap: 9vw; background: #e9e1d6; }
