@@ -80,6 +80,19 @@ h1 em, h2 em { font-weight: 500; }
 .statement h2 { font-size: clamp(3rem, 6vw, 6.2rem); letter-spacing: -.04em; }
 .statement p:last-child { max-width: 520px; margin: 28px auto 0; font-weight: 300; color: rgba(255,255,255,.7); }
 
+.journey { background: #171513; color: #fff; }
+.journey-head { display: grid; grid-template-columns: .62fr 1.38fr .8fr; gap: 5vw; align-items: start; margin-bottom: 72px; }
+.journey-head h2 { font-size: clamp(2.7rem, 4.8vw, 5.6rem); letter-spacing: -.04em; }
+.journey-head > p:last-child { max-width: 400px; color: rgba(255,255,255,.62); }
+.journey-steps { list-style: none; display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid rgba(255,255,255,.18); border-bottom: 1px solid rgba(255,255,255,.18); }
+.journey-step { position: relative; min-height: 320px; padding: 38px 2.5vw 42px; border-right: 1px solid rgba(255,255,255,.14); display: flex; flex-direction: column; justify-content: space-between; }
+.journey-step:last-child { border-right: 0; }
+.journey-step > span { color: #c5a66a; font-size: .65rem; letter-spacing: .17em; }
+.journey-step h3 { font-family: "Playfair Display", serif; font-size: clamp(1.45rem, 2vw, 2.2rem); font-weight: 500; line-height: 1.12; }
+.journey-step p { margin-top: 14px; color: rgba(255,255,255,.55); font-size: .86rem; }
+.journey-cta { display: flex; justify-content: space-between; align-items: center; gap: 30px; margin-top: 38px; }
+.journey-cta p { color: #c5a66a; font-family: "Playfair Display", serif; font-size: 1.2rem; font-style: italic; }
+
 .transformation { background: #f7f3ec; }
 .transformation-head { display: grid; grid-template-columns: 1.35fr .65fr; gap: 7vw; align-items: end; margin-bottom: 60px; }
 .transformation-head h2 { max-width: 900px; font-size: clamp(2.8rem, 5vw, 5.8rem); letter-spacing: -.04em; }
@@ -194,6 +207,12 @@ h1 em, h2 em { font-weight: 500; }
   .service-grid { grid-template-columns: 1fr; gap: 55px; }
   .service-card:nth-child(even) { margin-top: 0; }
   .service-image { height: 450px; }
+  .journey-head { grid-template-columns: 1fr; gap: 25px; margin-bottom: 46px; }
+  .journey-steps { grid-template-columns: 1fr; }
+  .journey-step { min-height: auto; padding: 32px 0; border-right: 0; border-bottom: 1px solid rgba(255,255,255,.14); display: grid; grid-template-columns: 42px 1fr; gap: 12px; }
+  .journey-step:last-child { border-bottom: 0; }
+  .journey-step h3 { font-size: 1.55rem; }
+  .journey-cta { align-items: flex-start; flex-direction: column; }
   .transformation-head { grid-template-columns: 1fr; gap: 28px; margin-bottom: 42px; }
   .transformation-visual img { aspect-ratio: 4 / 3; }
   .transform-label { margin: 14px; padding: 9px 11px; font-size: .95rem; }
