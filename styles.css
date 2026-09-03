@@ -80,6 +80,20 @@ h1 em, h2 em { font-weight: 500; }
 .statement h2 { font-size: clamp(3rem, 6vw, 6.2rem); letter-spacing: -.04em; }
 .statement p:last-child { max-width: 520px; margin: 28px auto 0; font-weight: 300; color: rgba(255,255,255,.7); }
 
+.transformation { background: #f7f3ec; }
+.transformation-head { display: grid; grid-template-columns: 1.35fr .65fr; gap: 7vw; align-items: end; margin-bottom: 60px; }
+.transformation-head h2 { max-width: 900px; font-size: clamp(2.8rem, 5vw, 5.8rem); letter-spacing: -.04em; }
+.transformation-copy { max-width: 430px; padding-bottom: 8px; color: #665d55; }
+.transformation-copy .text-link { display: inline-block; margin-top: 28px; }
+.transformation-visual { position: relative; margin: 0; overflow: hidden; background: #d9d0c4; }
+.transformation-visual img { display: block; width: 100%; aspect-ratio: 3 / 2; object-fit: cover; }
+.transformation-visual::after { content: ""; position: absolute; top: 0; bottom: 0; left: 50%; width: 1px; background: rgba(255,255,255,.78); box-shadow: 0 0 0 1px rgba(27,25,23,.08); }
+.transformation-visual figcaption { position: absolute; inset: 0; display: grid; grid-template-columns: 1fr 1fr; pointer-events: none; }
+.transform-label { align-self: end; margin: 28px; width: max-content; padding: 12px 16px; background: rgba(22,18,15,.78); color: #fff; backdrop-filter: blur(8px); font-family: "Playfair Display", serif; font-size: 1.15rem; }
+.transform-label small { display: block; margin-top: 2px; color: rgba(255,255,255,.65); font-family: "DM Sans", sans-serif; font-size: .6rem; letter-spacing: .11em; text-transform: uppercase; }
+.transform-after { justify-self: end; }
+.transformation-note { margin-top: 22px; color: #8b7557; font-size: .68rem; letter-spacing: .15em; text-transform: uppercase; text-align: center; }
+
 .gallery { background: var(--paper); }
 .gallery-head { display: flex; justify-content: space-between; align-items: end; margin-bottom: 55px; }
 .gallery-head h2 { font-size: clamp(3rem, 6vw, 6rem); }
@@ -180,6 +194,10 @@ h1 em, h2 em { font-weight: 500; }
   .service-grid { grid-template-columns: 1fr; gap: 55px; }
   .service-card:nth-child(even) { margin-top: 0; }
   .service-image { height: 450px; }
+  .transformation-head { grid-template-columns: 1fr; gap: 28px; margin-bottom: 42px; }
+  .transformation-visual img { aspect-ratio: 4 / 3; }
+  .transform-label { margin: 14px; padding: 9px 11px; font-size: .95rem; }
+  .transform-label small { font-size: .52rem; }
   .experience-promise-head, .promise-cards, .entrance-story-head, .entrance-story-grid { grid-template-columns: 1fr; }
   .experience-promise-head { gap: 25px; margin-bottom: 45px; }
   .promise-card { min-height: auto; padding: 38px 0; border-right: 0; border-bottom: 1px solid rgba(255,255,255,.14); }
