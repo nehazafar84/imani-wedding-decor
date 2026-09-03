@@ -147,6 +147,7 @@ h1 em, h2 em { font-weight: 500; }
 .venue-card-copy p { max-width: 580px; margin-top: 12px; color: rgba(255,255,255,.72); font-size: .84rem; }
 .venue-card-copy a { display: inline-block; margin-top: 22px; padding-bottom: 5px; border-bottom: 1px solid rgba(255,255,255,.45); font-size: .72rem; }
 .venue-card-copy a b { margin-left: 8px; font-weight: 400; }
+.venue-card-copy .venue-source-link { margin-left: 18px; border-bottom: 0; color: rgba(255,255,255,.58); font-size: .62rem; text-transform: uppercase; letter-spacing: .08em; }
 .venue-card a:focus-visible { outline: 3px solid #d4b77c; outline-offset: 5px; }
 
 .areas { position: relative; isolation: isolate; overflow: hidden; padding: 90px 7vw; min-height: 620px; display: flex; align-items: center; justify-content: flex-end; background: #4a4038 url("assets/home/cardiff-castle-wide.webp") center center / cover no-repeat; }
@@ -289,6 +290,7 @@ h1 em, h2 em { font-weight: 500; }
   .venue-card, .venue-card-featured { min-height: 470px; }
   .venue-card-copy { left: 22px; right: 22px; bottom: 24px; }
   .venue-card-copy p { font-size: .8rem; }
+  .venue-card-copy .venue-source-link { display: block; width: max-content; margin: 12px 0 0; }
   .areas { padding: 42px 5vw; min-height: 640px; background-position: 38% center; align-items: flex-end; }
   .areas::before { background: linear-gradient(180deg, rgba(20,16,13,.08) 0%, rgba(20,16,13,.28) 42%, rgba(20,16,13,.72) 100%); }
   .areas-card { padding: 38px 26px; }
