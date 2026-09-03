@@ -200,6 +200,8 @@ h1 em, h2 em { font-weight: 500; }
 .footer-contact span { color: #c5a66a; font-size: .6rem; letter-spacing: .15em; text-transform: uppercase; }
 .footer-contact strong { overflow-wrap: anywhere; font-size: .82rem; font-weight: 500; color: rgba(255,255,255,.86); }
 .footer-bottom { border-top: 1px solid rgba(255,255,255,.13); padding-top: 22px; display: flex; justify-content: space-between; color: rgba(255,255,255,.4); font-size: .62rem; text-transform: uppercase; letter-spacing: .1em; }
+.footer-owner-login { color: rgba(255,255,255,.55); border-bottom: 1px solid rgba(255,255,255,.22); padding-bottom: 2px; transition: color .2s ease,border-color .2s ease; }
+.footer-owner-login:hover,.footer-owner-login:focus-visible { color: #c5a66a; border-color: #c5a66a; }
 
 .experience-promise { background: #2a211b; color: #fff; }
 .experience-promise-head { display: grid; grid-template-columns: .65fr 1.35fr .9fr; gap: 5vw; align-items: start; margin-bottom: 70px; }
