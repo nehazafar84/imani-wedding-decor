@@ -9,7 +9,6 @@ function setMenuState(isOpen) {
   if (window.matchMedia('(max-width: 800px)').matches) nav.setAttribute('aria-hidden', String(!isOpen));
   else nav.removeAttribute('aria-hidden');
   document.body.style.overflow = isOpen ? 'hidden' : '';
-  if (isOpen) nav.querySelector('a')?.focus();
 }
 
 menuButton?.setAttribute('aria-expanded', 'false');
