@@ -72,3 +72,13 @@ document.querySelectorAll('.site-footer').forEach((footer) => {
   contact.innerHTML = '<a href="https://wa.me/447967962340" target="_blank" rel="noopener"><span>WhatsApp</span><strong>+44 7967 962340</strong></a><a href="mailto:info@imanievents.co.uk"><span>Email</span><strong>info@imanievents.co.uk</strong></a><a href="https://www.instagram.com/imanieventsuk/" target="_blank" rel="noopener"><span>Instagram</span><strong>@imanieventsuk ↗</strong></a>';
   footer.querySelector('.footer-bottom')?.before(contact);
 });
+
+document.querySelectorAll('.footer-bottom').forEach((footerBottom) => {
+  if (footerBottom.querySelector('.footer-owner-login')) return;
+  const ownerLink = document.createElement('a');
+  ownerLink.className = 'footer-owner-login';
+  ownerLink.href = 'admin-login.html';
+  ownerLink.textContent = 'Owner Portal';
+  ownerLink.setAttribute('aria-label', 'Sign in to the Imani Events owner portal');
+  footerBottom.appendChild(ownerLink);
+});
