@@ -128,6 +128,18 @@ h1 em, h2 em { font-weight: 500; }
 .footer-links { display: flex; gap: 28px; justify-content: flex-end; margin: 60px 0; font-size: .75rem; }
 .footer-bottom { border-top: 1px solid rgba(255,255,255,.13); padding-top: 22px; display: flex; justify-content: space-between; color: rgba(255,255,255,.4); font-size: .62rem; text-transform: uppercase; letter-spacing: .1em; }
 
+.experience-promise { background: #2a211b; color: #fff; }
+.experience-promise-head { display: grid; grid-template-columns: .65fr 1.35fr .9fr; gap: 5vw; align-items: start; margin-bottom: 70px; }
+.experience-promise-head h2 { font-size: clamp(2.6rem, 4.7vw, 5.5rem); }
+.experience-promise-head > p:last-child { max-width: 420px; color: rgba(255,255,255,.64); }
+.promise-cards { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid rgba(255,255,255,.18); border-bottom: 1px solid rgba(255,255,255,.18); }
+.promise-card { min-height: 330px; padding: 42px 3vw; border-right: 1px solid rgba(255,255,255,.18); }
+.promise-card:last-child { border-right: 0; }
+.promise-card > span { display: block; color: #c5a66a; font-size: .62rem; letter-spacing: .15em; margin-bottom: 55px; }
+.promise-card blockquote { font-size: clamp(1.65rem, 2.3vw, 2.7rem); line-height: 1.08; }
+.promise-card p { max-width: 390px; margin-top: 24px; color: rgba(255,255,255,.58); }
+.promise-note { margin-top: 28px; color: #c5a66a; font-size: .68rem; letter-spacing: .14em; text-transform: uppercase; }
+
 .entrance-story { background: #eee7dc; }
 .entrance-story-head { display: grid; grid-template-columns: .72fr 1.45fr 1fr; gap: 5vw; align-items: start; margin-bottom: 70px; }
 .entrance-story-head h2 { font-size: clamp(2.7rem, 5vw, 5.8rem); }
@@ -168,7 +180,11 @@ h1 em, h2 em { font-weight: 500; }
   .service-grid { grid-template-columns: 1fr; gap: 55px; }
   .service-card:nth-child(even) { margin-top: 0; }
   .service-image { height: 450px; }
-  .entrance-story-head, .entrance-story-grid { grid-template-columns: 1fr; }
+  .experience-promise-head, .promise-cards, .entrance-story-head, .entrance-story-grid { grid-template-columns: 1fr; }
+  .experience-promise-head { gap: 25px; margin-bottom: 45px; }
+  .promise-card { min-height: auto; padding: 38px 0; border-right: 0; border-bottom: 1px solid rgba(255,255,255,.14); }
+  .promise-card:last-child { border-bottom: 0; }
+  .promise-card > span { margin-bottom: 25px; }
   .entrance-story-head { gap: 25px; margin-bottom: 45px; }
   .entrance-moment:nth-child(2) { margin-top: 45px; }
   .entrance-moment img { height: 480px; }
