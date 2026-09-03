@@ -13,13 +13,14 @@ body { font-family: "DM Sans", sans-serif; background: var(--paper); color: var(
 a { color: inherit; text-decoration: none; }
 button { font: inherit; }
 
-.site-header { position: absolute; z-index: 20; top: 0; left: 0; width: 100%; padding: 26px 5vw; display: flex; align-items: center; justify-content: space-between; color: #fff; border-bottom: 1px solid rgba(255,255,255,.22); }
+.site-header { position: absolute; z-index: 20; top: 0; left: 0; width: 100%; padding: 20px 5vw; display: flex; align-items: center; justify-content: space-between; color: #fff; border-bottom: 1px solid rgba(255,255,255,.24); background: rgba(18,13,10,.24); backdrop-filter: blur(7px); -webkit-backdrop-filter: blur(7px); }
 .brand { display: flex; align-items: center; gap: 13px; letter-spacing: .18em; font-size: .78rem; font-weight: 600; }
 .brand-mark { width: 48px; height: 48px; flex: 0 0 48px; display: block; overflow: hidden; color: transparent; font-size: 0; background: url("assets/imani-monogram.png") center / contain no-repeat; filter: drop-shadow(0 1px 1px rgba(0,0,0,.16)); }
-.main-nav { display: flex; align-items: center; gap: 32px; font-size: .78rem; letter-spacing: .06em; }
-.main-nav a { transition: opacity .25s; }
-.main-nav a:hover { opacity: .65; }
-.nav-cta { border: 1px solid rgba(255,255,255,.6); padding: 11px 17px; }
+.main-nav { display: flex; align-items: center; gap: 8px; font-size: .78rem; font-weight: 500; letter-spacing: .06em; }
+.main-nav a { padding: 10px 14px; border-radius: 999px; text-shadow: 0 1px 10px rgba(0,0,0,.65); transition: opacity .25s, background .25s, transform .25s; }
+.main-nav a:hover { opacity: 1; background: rgba(255,255,255,.14); transform: translateY(-1px); }
+.nav-cta { border: 1px solid rgba(226,190,112,.85); padding: 11px 18px !important; border-radius: 2px !important; background: rgba(184,139,52,.24); box-shadow: inset 0 0 0 1px rgba(255,255,255,.08), 0 4px 18px rgba(0,0,0,.12); }
+.nav-cta:hover { background: #c49a45 !important; border-color: #d8b665; color: #17120d; text-shadow: none; }
 .menu-toggle { display: none; border: 0; background: transparent; width: 34px; height: 34px; }
 .menu-toggle span { display: block; width: 25px; height: 1px; background: #fff; margin: 7px auto; }
 
