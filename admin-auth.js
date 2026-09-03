@@ -1,101 +1,14 @@
-const supabaseAdmin = window.supabase.createClient(
-  'https://lgdhudhsorazcjhtisrs.supabase.co',
-  'sb_publishable_-sZ0I8Ymjtc67J23oUyMhw_EnqXUyFm'
-);
-
-async function adminLandingPage(session) {
-  if (!session?.user?.id) return 'admin-login.html';
-  const { data: profile } = await supabaseAdmin.from('admin_profiles').select('role,is_active').eq('user_id', session.user.id).maybeSingle();
-  if (!profile?.is_active) return 'admin-login.html';
-  return profile.role === 'team' ? 'admin-calendar.html' : 'admin-dashboard.html';
-}
-
-async function handleAdminLogin() {
-  const form = document.getElementById('adminLogin');
-  if (!form) return;
-  const note = document.getElementById('loginNote');
-  const button = form.querySelector('button[type="submit"]');
-  const { data: sessionData } = await supabaseAdmin.auth.getSession();
-  if (sessionData.session) { window.location.href = await adminLandingPage(sessionData.session); return; }
-  form.addEventListener('submit', async (event) => {
-    event.preventDefault(); button.disabled = true; button.textContent = 'Signing in...'; note.textContent = 'Checking your account...';
-    const email = document.getElementById('adminEmail').value.trim();
-    const password = document.getElementById('adminPassword').value;
-    const { data, error } = await supabaseAdmin.auth.signInWithPassword({ email, password });
-    if (error) { note.textContent = 'Email or password is incorrect. Please try again.'; button.disabled = false; button.textContent = 'Sign in'; return; }
-    const destination = await adminLandingPage(data.session);
-    if (destination === 'admin-login.html') { await supabaseAdmin.auth.signOut(); note.textContent = 'This account is not active. Please contact the owner.'; button.disabled = false; button.textContent = 'Sign in'; return; }
-    note.textContent = 'Login successful. Opening your portal...'; window.location.href = destination;
-  });
-}
-
-function escapeHtml(value) { return String(value ?? '').replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch])); }
-
-function renderStats(data) {
-  document.getElementById('statNew').textContent = data.filter(item => item.status === 'new').length;
-  document.getElementById('statConversation').textContent = data.filter(item => ['contacted','quoted'].includes(item.status)).length;
-  document.getElementById('statBooked').textContent = data.filter(item => item.status === 'booked').length;
-}
-
-function renderEnquiries() {
-  const list = document.getElementById('enquiryList');
-  if (!list) return;
-  const search = (document.getElementById('enquirySearch')?.value || '').trim().toLowerCase();
-  const status = document.getElementById('enquiryStatusFilter')?.value || 'all';
-  const data = (window.__imaniEnquiries || []).filter(item => {
-    const matchesStatus = status === 'all' || (item.status || 'new') === status;
-    const haystack = [item.name,item.phone,item.email,item.event_type,item.venue,item.budget].join(' ').toLowerCase();
-    return matchesStatus && (!search || haystack.includes(search));
-  });
-  if (!data.length) { list.innerHTML = '<div class="admin-empty">No enquiries match your search or filter.</div>'; return; }
-  list.innerHTML = data.map(item => {
-    const date = new Date(item.created_at).toLocaleDateString('en-GB');
-    return `<div class="enquiry-row"><div><strong>${escapeHtml(item.name)}</strong><small>${escapeHtml(item.phone || '')} · ${date}</small></div><div>${escapeHtml(item.event_type || 'Event')}<small>${escapeHtml(item.venue || 'Venue not provided')}</small></div><div>${item.guest_count ? escapeHtml(String(item.guest_count)) + ' guests' : 'Guest count not provided'}<small>${escapeHtml(item.budget || 'Budget not provided')}</small></div><div><span class="status-pill">${escapeHtml(item.status || 'new')}</span></div><div><button class="admin-button secondary" type="button" onclick="showEnquiry(${item.id})">View</button></div></div>`;
-  }).join('');
-}
-
-async function loadAdminDashboard() {
-  const list = document.getElementById('enquiryList'); if (!list) return;
-  const { data: sessionData } = await supabaseAdmin.auth.getSession();
-  if (!sessionData.session) { window.location.href = 'admin-login.html'; return; }
-  const destination = await adminLandingPage(sessionData.session);
-  if (destination === 'admin-calendar.html') { window.location.href = destination; return; }
-  const { data, error } = await supabaseAdmin.from('enquiries').select('id,created_at,name,phone,email,event_type,event_date,venue,guest_count,budget,message,status').order('created_at', { ascending: false });
-  if (error) { list.innerHTML = '<div class="admin-empty">Could not load enquiries. Please refresh.</div>'; return; }
-  window.__imaniEnquiries = data || []; renderStats(window.__imaniEnquiries); renderEnquiries();
-}
-
-function showEnquiry(id) {
-  const item = (window.__imaniEnquiries || []).find(entry => entry.id === id); if (!item) return;
-  let modal = document.getElementById('enquiryModal');
-  if (!modal) { modal = document.createElement('div'); modal.id = 'enquiryModal'; modal.className = 'enquiry-modal'; modal.innerHTML = `<div class="enquiry-modal-card"><button class="modal-close" type="button" aria-label="Close" onclick="closeEnquiryModal()">×</button><div id="enquiryModalContent"></div></div>`; document.body.appendChild(modal); modal.addEventListener('click', event => { if (event.target === modal) closeEnquiryModal(); }); }
-  document.getElementById('enquiryModalContent').innerHTML = `<p class="eyebrow dark">Enquiry details</p><h2>${escapeHtml(item.name)}</h2><div class="detail-grid"><div><span>Phone</span><strong>${escapeHtml(item.phone || 'Not provided')}</strong></div><div><span>Email</span><strong>${escapeHtml(item.email || 'Not provided')}</strong></div><div><span>Event</span><strong>${escapeHtml(item.event_type || 'Not provided')}</strong></div><div><span>Event date</span><strong>${escapeHtml(item.event_date || 'Not provided')}</strong></div><div><span>Venue</span><strong>${escapeHtml(item.venue || 'Not provided')}</strong></div><div><span>Guests</span><strong>${escapeHtml(item.guest_count || 'Not provided')}</strong></div><div><span>Budget</span><strong>${escapeHtml(item.budget || 'Not provided')}</strong></div><div><span>Received</span><strong>${new Date(item.created_at).toLocaleString('en-GB')}</strong></div></div><div class="message-box"><span>Customer message</span><p>${escapeHtml(item.message || 'No message provided.')}</p></div><div class="status-editor"><label for="statusSelect">Status</label><select id="statusSelect">${['new','contacted','quoted','booked','closed'].map(status => `<option value="${status}" ${status === item.status ? 'selected' : ''}>${status.charAt(0).toUpperCase() + status.slice(1)}</option>`).join('')}</select><button class="admin-button" id="saveStatusButton" type="button" onclick="saveEnquiryStatus(${item.id})">Save status</button><button class="admin-button secondary" type="button" onclick="deleteEnquiry(${item.id})">Delete enquiry</button><span class="status-save-note" id="statusSaveNote"></span></div>`;
-  modal.classList.add('open');
-}
-
-function closeEnquiryModal() { document.getElementById('enquiryModal')?.classList.remove('open'); }
-
-async function saveEnquiryStatus(id) {
-  const select = document.getElementById('statusSelect'), button = document.getElementById('saveStatusButton'), note = document.getElementById('statusSaveNote'); if (!select || !button || !note) return;
-  button.disabled = true; button.textContent = 'Saving...'; note.textContent = '';
-  const { error } = await supabaseAdmin.from('enquiries').update({ status: select.value }).eq('id', id);
-  if (error) { note.textContent = 'Could not save. Please try again.'; button.disabled = false; button.textContent = 'Save status'; return; }
-  const item = (window.__imaniEnquiries || []).find(entry => entry.id === id); if (item) item.status = select.value;
-  note.textContent = 'Saved'; button.textContent = 'Saved'; renderStats(window.__imaniEnquiries); renderEnquiries();
-  setTimeout(() => { button.disabled = false; button.textContent = 'Save status'; }, 1000);
-}
-
-async function deleteEnquiry(id) {
-  const item = (window.__imaniEnquiries || []).find(entry => entry.id === id); if (!item) return;
-  if (!window.confirm(`Delete the enquiry from ${item.name}? This cannot be undone.`)) return;
-  const { error } = await supabaseAdmin.from('enquiries').delete().eq('id', id);
-  if (error) { window.alert('Could not delete this enquiry. Please try again.'); return; }
-  window.__imaniEnquiries = window.__imaniEnquiries.filter(entry => entry.id !== id); closeEnquiryModal(); renderStats(window.__imaniEnquiries); renderEnquiries();
-}
-
-async function signOutAdmin() { await supabaseAdmin.auth.signOut(); window.location.href = 'admin-login.html'; }
-
-document.getElementById('enquirySearch')?.addEventListener('input', renderEnquiries);
-document.getElementById('enquiryStatusFilter')?.addEventListener('change', renderEnquiries);
-document.addEventListener('keydown', event => { if (event.key === 'Escape') closeEnquiryModal(); });
-handleAdminLogin(); loadAdminDashboard();
+const supabaseAdmin=window.supabase.createClient('https://lgdhudhsorazcjhtisrs.supabase.co','sb_publishable_-sZ0I8Ymjtc67J23oUyMhw_EnqXUyFm');
+async function adminLandingPage(session){if(!session?.user?.id)return'admin-login.html';const{data:p}=await supabaseAdmin.from('admin_profiles').select('role,is_active').eq('user_id',session.user.id).maybeSingle();if(!p?.is_active)return'admin-login.html';return p.role==='team'?'admin-calendar.html':'admin-dashboard.html'}
+async function handleAdminLogin(){const f=document.getElementById('adminLogin');if(!f)return;const n=document.getElementById('loginNote'),b=f.querySelector('button[type="submit"]'),{data:s}=await supabaseAdmin.auth.getSession();if(s.session){location.href=await adminLandingPage(s.session);return}f.onsubmit=async e=>{e.preventDefault();b.disabled=true;b.textContent='Signing in...';const{data,error}=await supabaseAdmin.auth.signInWithPassword({email:document.getElementById('adminEmail').value.trim(),password:document.getElementById('adminPassword').value});if(error){n.textContent='Email or password is incorrect. Please try again.';b.disabled=false;b.textContent='Sign in';return}const d=await adminLandingPage(data.session);if(d==='admin-login.html'){await supabaseAdmin.auth.signOut();n.textContent='This account is not active.';b.disabled=false;b.textContent='Sign in';return}location.href=d}}
+function escapeHtml(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
+function renderStats(d){statNew.textContent=d.filter(x=>x.status==='new').length;statConversation.textContent=d.filter(x=>['contacted','quoted'].includes(x.status)).length;statBooked.textContent=d.filter(x=>x.status==='booked').length}
+function renderEnquiries(){const list=document.getElementById('enquiryList');if(!list)return;const q=(document.getElementById('enquirySearch')?.value||'').toLowerCase(),s=document.getElementById('enquiryStatusFilter')?.value||'all',d=(window.__imaniEnquiries||[]).filter(x=>(s==='all'||x.status===s)&&(!q||[x.name,x.phone,x.email,x.event_type,x.venue,x.budget,x.referral_source].join(' ').toLowerCase().includes(q)));list.innerHTML=d.length?d.map(x=>`<div class="enquiry-row"><div><strong>${escapeHtml(x.name)}</strong><small>${escapeHtml(x.phone)} · ${new Date(x.created_at).toLocaleDateString('en-GB')}</small></div><div>${escapeHtml(x.event_type||'Event')}<small>${escapeHtml(x.venue||'Venue not provided')}</small></div><div>${x.guest_count?x.guest_count+' guests':'Guests not provided'}<small>${escapeHtml(x.budget||'Budget not provided')}</small></div><div><span class="status-pill">${escapeHtml(x.status||'new')}</span></div><div><button class="admin-button secondary" onclick="showEnquiry(${x.id})">View</button></div></div>`).join(''):'<div class="admin-empty">No enquiries match your search or filter.</div>'}
+async function loadAdminDashboard(){const list=document.getElementById('enquiryList');if(!list)return;const{data:s}=await supabaseAdmin.auth.getSession();if(!s.session){location.href='admin-login.html';return}if(await adminLandingPage(s.session)==='admin-calendar.html'){location.href='admin-calendar.html';return}const{data,error}=await supabaseAdmin.from('enquiries').select('*').order('created_at',{ascending:false});if(error){list.innerHTML='<div class="admin-empty">Could not load enquiries.</div>';return}window.__imaniEnquiries=data||[];renderStats(data||[]);renderEnquiries()}
+function showEnquiry(id){const x=(window.__imaniEnquiries||[]).find(e=>e.id===id);if(!x)return;let m=document.getElementById('enquiryModal');if(!m){m=document.createElement('div');m.id='enquiryModal';m.className='enquiry-modal';m.innerHTML='<div class="enquiry-modal-card"><button class="modal-close" onclick="closeEnquiryModal()">×</button><div id="enquiryModalContent"></div></div>';document.body.appendChild(m);m.onclick=e=>{if(e.target===m)closeEnquiryModal()}}const extras=Array.isArray(x.additional_events)&&x.additional_events.length?`<div class="message-box"><span>Additional celebrations</span>${x.additional_events.map(e=>`<p><strong>${escapeHtml(e.event_type||'Event')}</strong> · ${escapeHtml(e.event_date||'Date TBC')} · ${escapeHtml(e.venue||'Venue TBC')}</p>`).join('')}</div>`:'';document.getElementById('enquiryModalContent').innerHTML=`<p class="eyebrow dark">Enquiry details</p><h2>${escapeHtml(x.name)}</h2><div class="detail-grid"><div><span>Phone</span><strong>${escapeHtml(x.phone||'Not provided')}</strong></div><div><span>Email</span><strong>${escapeHtml(x.email||'Not provided')}</strong></div><div><span>Event</span><strong>${escapeHtml(x.event_type||'Not provided')}</strong></div><div><span>Date</span><strong>${escapeHtml(x.event_date||'Not provided')}</strong></div><div><span>Venue</span><strong>${escapeHtml(x.venue||'Not provided')}</strong></div><div><span>Guests</span><strong>${escapeHtml(x.guest_count||'Not provided')}</strong></div><div><span>Preferred contact</span><strong>${escapeHtml(x.preferred_contact||'Not provided')}</strong></div><div><span>Found us via</span><strong>${escapeHtml(x.referral_source||'Not provided')}</strong></div></div><div class="message-box"><span>Customer message</span><p>${escapeHtml(x.message||'No message provided.')}</p>${x.inspiration_url?`<p><a href="${escapeHtml(x.inspiration_url)}" target="_blank" rel="noopener">Open inspiration link ↗</a></p>`:''}</div>${extras}<div class="status-editor"><select id="statusSelect">${['new','contacted','quoted','booked','closed'].map(s=>`<option value="${s}" ${s===x.status?'selected':''}>${s}</option>`).join('')}</select><button class="admin-button" id="saveStatusButton" onclick="saveEnquiryStatus(${x.id})">Save status</button>${x.status!=='booked'?`<button class="admin-button" id="convertBookingButton" onclick="convertEnquiryToBooking(${x.id})">Convert to booking</button>`:''}<button class="admin-button secondary" onclick="deleteEnquiry(${x.id})">Delete enquiry</button><span id="statusSaveNote"></span></div>`;m.classList.add('open')}
+function closeEnquiryModal(){document.getElementById('enquiryModal')?.classList.remove('open')}
+async function saveEnquiryStatus(id){const s=document.getElementById('statusSelect'),n=document.getElementById('statusSaveNote'),{error}=await supabaseAdmin.from('enquiries').update({status:s.value}).eq('id',id);if(error){n.textContent='Could not save.';return}const x=window.__imaniEnquiries.find(e=>e.id===id);x.status=s.value;n.textContent='Saved';renderStats(window.__imaniEnquiries);renderEnquiries()}
+async function convertEnquiryToBooking(id){const x=window.__imaniEnquiries.find(e=>e.id===id),b=document.getElementById('convertBookingButton'),n=document.getElementById('statusSaveNote');if(!x||!x.event_date){n.textContent='Add an event date before converting this enquiry.';return}b.disabled=true;b.textContent='Creating booking...';const{data:existing}=await supabaseAdmin.from('bookings').select('id').eq('enquiry_id',id).maybeSingle();if(existing){location.href=`admin-bookings.html?booking=${existing.id}`;return}const{data:booking,error}=await supabaseAdmin.from('bookings').insert({enquiry_id:id,customer_name:x.name,phone:x.phone,email:x.email,event_type:x.event_type||'Wedding',event_date:x.event_date,venue:x.venue,guest_count:x.guest_count,notes:x.message||null,status:'confirmed'}).select('id').single();if(error){n.textContent='Could not create booking.';b.disabled=false;b.textContent='Convert to booking';return}const events=[{booking_id:booking.id,day_number:1,event_type:x.event_type||'Wedding',event_date:x.event_date,venue:x.venue,guest_count:x.guest_count},...(Array.isArray(x.additional_events)?x.additional_events:[]).filter(e=>e.event_date).map((e,i)=>({booking_id:booking.id,day_number:i+2,event_type:e.event_type||'Event',event_date:e.event_date,venue:e.venue||null,guest_count:null}))];await supabaseAdmin.from('booking_event_days').insert(events);await supabaseAdmin.from('enquiries').update({status:'booked'}).eq('id',id);location.href=`admin-bookings.html?booking=${booking.id}`}
+async function deleteEnquiry(id){const x=window.__imaniEnquiries.find(e=>e.id===id);if(!x||!confirm(`Delete the enquiry from ${x.name}?`))return;const{error}=await supabaseAdmin.from('enquiries').delete().eq('id',id);if(error){alert('Could not delete this enquiry.');return}window.__imaniEnquiries=window.__imaniEnquiries.filter(e=>e.id!==id);closeEnquiryModal();renderStats(window.__imaniEnquiries);renderEnquiries()}
+async function signOutAdmin(){await supabaseAdmin.auth.signOut();location.href='admin-login.html'}
+document.getElementById('enquirySearch')?.addEventListener('input',renderEnquiries);document.getElementById('enquiryStatusFilter')?.addEventListener('change',renderEnquiries);document.addEventListener('keydown',e=>{if(e.key==='Escape')closeEnquiryModal()});handleAdminLogin();loadAdminDashboard();
