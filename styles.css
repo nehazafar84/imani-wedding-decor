@@ -235,10 +235,15 @@ h1 em, h2 em { font-weight: 500; }
   .floating-whatsapp { right: 14px; bottom: 76px; min-height: 48px; padding: 6px 14px 6px 6px; }
   .floating-whatsapp > span { width: 34px; height: 34px; }
   .floating-whatsapp strong { font-size: .7rem; }
-  .main-nav { position: fixed; inset: 0; background: #201d1a; flex-direction: column; justify-content: center; gap: 28px; font-family: "Playfair Display", serif; font-size: 1.7rem; transform: translateX(100%); transition: transform .35s ease; }
-  .main-nav.open { transform: none; }
-  .nav-cta { font-family: "DM Sans", sans-serif; font-size: .7rem; margin-top: 12px; }
+  .main-nav { position: absolute; z-index: 21; top: 0; left: 0; width: 100vw; height: 100vh; height: 100dvh; padding: 110px 7vw calc(92px + env(safe-area-inset-bottom)); background: linear-gradient(145deg,#171411 0%,#29221d 100%); flex-direction: column; align-items: stretch; justify-content: center; gap: 0; font-family: "Playfair Display", serif; font-size: clamp(1.75rem,8vw,2.35rem); transform: translateX(100%); visibility: hidden; pointer-events: none; transition: transform .38s cubic-bezier(.22,.75,.25,1),visibility 0s linear .38s; }
+  .main-nav.open { transform: none; visibility: visible; pointer-events: auto; transition-delay: 0s; }
+  .main-nav a { width: 100%; padding: 15px 0; border-radius: 0; border-bottom: 1px solid rgba(255,255,255,.13); text-shadow: none; }
+  .main-nav a:first-child { border-top: 1px solid rgba(255,255,255,.13); }
+  .nav-cta { justify-content: center; width: 100% !important; min-height: 52px; margin-top: 28px; padding: 14px 18px !important; border: 1px solid #c9a55c !important; font-family: "DM Sans", sans-serif; font-size: .76rem; text-align: center; text-transform: uppercase; letter-spacing: .14em; }
   .menu-toggle { display: block; position: relative; z-index: 22; }
+  .menu-toggle span { transition: transform .28s ease,opacity .2s ease; }
+  .menu-toggle[aria-expanded="true"] span:first-child { transform: translateY(4px) rotate(45deg); }
+  .menu-toggle[aria-expanded="true"] span:last-child { transform: translateY(-4px) rotate(-45deg); }
   .brand { position: relative; z-index: 22; }
   .hero { padding: 0 6vw 18vh; min-height: 92svh; }
   .hero::after { width: 80vw; right: -10vw; height: 55vh; }
