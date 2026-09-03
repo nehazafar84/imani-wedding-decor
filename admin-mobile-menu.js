@@ -1,4 +1,12 @@
 (() => {
+  if (!document.querySelector('link[data-imani-admin-polish]')) {
+    const polish = document.createElement('link');
+    polish.rel = 'stylesheet';
+    polish.href = 'admin-polish.css';
+    polish.dataset.imaniAdminPolish = 'true';
+    document.head.appendChild(polish);
+  }
+
   const sidebar = document.querySelector('.admin-sidebar');
   const nav = document.querySelector('.admin-nav');
   const brand = document.querySelector('.admin-brand');
