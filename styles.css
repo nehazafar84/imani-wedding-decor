@@ -138,6 +138,21 @@ h1 em, h2 em { font-weight: 500; }
 .testimonial blockquote { max-width: 900px; margin: auto; font-size: clamp(2.6rem, 5vw, 5rem); letter-spacing: -.035em; }
 .testimonial p { margin-top: 25px; color: #81776e; font-size: .8rem; }
 
+.home-faq { display: grid; grid-template-columns: .75fr 1.25fr; gap: 9vw; background: var(--paper); }
+.home-faq-intro { position: sticky; top: 110px; align-self: start; }
+.home-faq-intro h2 { font-size: clamp(2.8rem, 4.8vw, 5.4rem); letter-spacing: -.04em; }
+.home-faq-intro > p { max-width: 430px; margin-top: 28px; color: #6b625a; }
+.home-faq-intro .text-link { display: inline-block; margin-top: 30px; }
+.faq-list { border-top: 1px solid var(--line); }
+.faq-list details { border-bottom: 1px solid var(--line); }
+.faq-list summary { list-style: none; position: relative; display: grid; grid-template-columns: 48px 1fr 28px; gap: 10px; align-items: center; padding: 30px 0; cursor: pointer; font-family: "Playfair Display", serif; font-size: clamp(1.25rem, 1.7vw, 1.75rem); line-height: 1.2; }
+.faq-list summary::-webkit-details-marker { display: none; }
+.faq-list summary > span { color: #9a7d4f; font-family: "DM Sans", sans-serif; font-size: .62rem; letter-spacing: .14em; }
+.faq-list summary::after { content: "+"; grid-column: 3; grid-row: 1; justify-self: end; color: #9a7d4f; font-family: "DM Sans", sans-serif; font-size: 1.35rem; font-weight: 300; transition: transform .25s; }
+.faq-list details[open] summary::after { transform: rotate(45deg); }
+.faq-list details p { max-width: 680px; padding: 0 48px 30px 58px; color: #69615a; font-size: .94rem; }
+.faq-list summary:focus-visible { outline: 2px solid #a9864e; outline-offset: 5px; }
+
 .quote-section { display: grid; grid-template-columns: 1.1fr .9fr; min-height: 680px; background: #2b2723; color: #fff; }
 .quote-copy { padding: 110px 7vw; align-self: center; }
 .quote-copy h2 { font-size: clamp(3.2rem, 6vw, 6.5rem); }
@@ -207,6 +222,10 @@ h1 em, h2 em { font-weight: 500; }
   .service-grid { grid-template-columns: 1fr; gap: 55px; }
   .service-card:nth-child(even) { margin-top: 0; }
   .service-image { height: 450px; }
+  .home-faq { grid-template-columns: 1fr; gap: 48px; }
+  .home-faq-intro { position: static; }
+  .faq-list summary { grid-template-columns: 36px 1fr 22px; padding: 24px 0; font-size: 1.2rem; }
+  .faq-list details p { padding: 0 22px 26px 46px; font-size: .9rem; }
   .journey-head { grid-template-columns: 1fr; gap: 25px; margin-bottom: 46px; }
   .journey-steps { grid-template-columns: 1fr; }
   .journey-step { min-height: auto; padding: 32px 0; border-right: 0; border-bottom: 1px solid rgba(255,255,255,.14); display: grid; grid-template-columns: 42px 1fr; gap: 12px; }
