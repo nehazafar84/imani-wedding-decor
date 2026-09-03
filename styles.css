@@ -192,6 +192,13 @@ h1 em, h2 em { font-weight: 500; }
 .footer-brand strong { display: block; letter-spacing: .16em; font-size: .82rem; }
 .footer-brand small { color: rgba(255,255,255,.45); font-size: .65rem; }
 .footer-links { display: flex; gap: 28px; justify-content: flex-end; margin: 60px 0; font-size: .75rem; }
+.footer-contact { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); border-top: 1px solid rgba(255,255,255,.13); }
+.footer-contact a { display: flex; flex-direction: column; gap: 6px; min-width: 0; padding: 24px 22px; border-right: 1px solid rgba(255,255,255,.13); transition: background .25s ease; }
+.footer-contact a:first-child { padding-left: 0; }
+.footer-contact a:last-child { border-right: 0; }
+.footer-contact a:hover { background: rgba(255,255,255,.05); }
+.footer-contact span { color: #c5a66a; font-size: .6rem; letter-spacing: .15em; text-transform: uppercase; }
+.footer-contact strong { overflow-wrap: anywhere; font-size: .82rem; font-weight: 500; color: rgba(255,255,255,.86); }
 .footer-bottom { border-top: 1px solid rgba(255,255,255,.13); padding-top: 22px; display: flex; justify-content: space-between; color: rgba(255,255,255,.4); font-size: .62rem; text-transform: uppercase; letter-spacing: .1em; }
 
 .experience-promise { background: #2a211b; color: #fff; }
@@ -302,6 +309,9 @@ h1 em, h2 em { font-weight: 500; }
   .quote-copy { padding: 85px 6vw 45px; }
   .quote-card { padding: 30px 6vw 85px; }
   .footer-links { justify-content: flex-start; flex-wrap: wrap; }
+  .footer-contact { grid-template-columns: 1fr; }
+  .footer-contact a,.footer-contact a:first-child { padding: 17px 0; border-right: 0; border-bottom: 1px solid rgba(255,255,255,.13); }
+  .footer-contact a:last-child { border-bottom: 0; }
   .footer-bottom { display: block; }
   .footer-bottom span { display: block; margin-top: 8px; }
 }
