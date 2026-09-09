@@ -12,6 +12,14 @@
   const brand = document.querySelector('.admin-brand');
   if (!sidebar || !nav || !brand || document.querySelector('.admin-menu-toggle')) return;
 
+  if (document.documentElement.dataset.adminRole !== 'team' && !nav.querySelector('[href="admin-visualiser.html"]')) {
+    const visualiserLink = document.createElement('a');
+    visualiserLink.href = 'admin-visualiser.html';
+    visualiserLink.textContent = 'Venue Visualiser';
+    if (location.pathname.endsWith('admin-visualiser.html')) visualiserLink.className = 'active';
+    nav.appendChild(visualiserLink);
+  }
+
   const style = document.createElement('style');
   style.textContent = `
     .admin-menu-toggle{display:none;border:0;background:transparent;color:#fff;width:42px;height:42px;padding:8px;border-radius:8px;cursor:pointer;align-items:center;justify-content:center}

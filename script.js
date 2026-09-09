@@ -82,3 +82,13 @@ document.querySelectorAll('.footer-bottom').forEach((footerBottom) => {
   ownerLink.setAttribute('aria-label', 'Sign in to the Imani Events owner portal');
   footerBottom.appendChild(ownerLink);
 });
+
+
+document.querySelectorAll('.main-nav').forEach((nav) => {
+  if (nav.querySelector('[href="visualiser.html"]')) return;
+  const link = document.createElement('a');
+  link.href = 'visualiser.html';
+  link.textContent = 'Visualise';
+  const cta = nav.querySelector('.nav-cta');
+  if (cta) nav.insertBefore(link, cta); else nav.appendChild(link);
+});

@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#1d1916">
+  <meta name="description" content="Visualise your Imani Events wedding décor inside three South Wales venue references.">
+  <title>Venue Visualiser | Imani Events</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="inner.css">
+  <link rel="stylesheet" href="visualiser.css?v=2">
+</head>
+<body class="inner-page visualiser-page">
+  <div class="inner-header visualiser-header">
+    <header class="site-header">
+      <a class="brand" href="index.html" aria-label="Imani Events home"><span class="brand-mark">IE</span><span>IMANI EVENTS</span></a>
+      <button class="menu-toggle" type="button" aria-label="Open menu" aria-expanded="false"><span></span><span></span></button>
+      <nav class="main-nav" aria-label="Main navigation">
+        <a href="services.html">Décor</a><a href="gallery.html">Our Work</a><a href="about.html">About</a><a href="visualiser.html" aria-current="page">Visualise</a><a href="packages.html">Hire & Packages</a><a class="nav-cta" href="quote.html">Get a Quote</a>
+      </nav>
+    </header>
+  </div>
+
+  <main>
+    <section class="visualiser-intro">
+      <div class="wrap">
+        <p class="eyebrow dark">A first feeling, made visible</p>
+        <h1>Visualise your<br><em>celebration.</em></h1>
+        <p>Choose a venue, a stage and a centrepiece. Your concept will come together instantly, ready to save or share with Imani Events.</p>
+        <div class="visualiser-steps" aria-label="Visualiser steps"><span class="is-current">01 Venue</span><span>02 Stage</span><span>03 Centrepiece</span><span>04 Your design</span></div>
+      </div>
+    </section>
+
+    <section class="visualiser-shell">
+      <div class="visualiser-preview-column">
+        <div class="visualiser-preview" id="visualiserPreview" aria-label="Venue design preview">
+          <div class="visualiser-before" id="visualiserBefore"></div>
+          <div class="visualiser-after" id="visualiserAfter">
+            <div class="stage-layer" id="stageLayer" aria-hidden="true"><div class="stage-arch"></div><div class="stage-florals"></div><div class="stage-sofa"></div><div class="stage-plinths"></div></div>
+            <div class="centrepiece-layer" id="centrepieceLayer" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+          </div>
+          <div class="preview-wash"></div>
+          <div class="preview-label preview-label-before">Venue reference</div><div class="preview-label preview-label-after">Your design</div>
+          <div class="preview-slider-line" id="previewSliderLine"></div>
+          <div class="preview-reference" id="previewReference">IMANI-V1-S1-C1</div>
+        </div>
+        <div class="preview-controls"><label for="beforeAfter">Before <span>Move the slider to compare</span> After</label><input id="beforeAfter" type="range" min="0" max="100" value="58" aria-label="Before and after comparison"></div>
+        <div class="preview-summary" id="previewSummary"></div>
+        <p id="placeholderNote" class="placeholder-label">Temporary venue room mockup.</p>
+      </div>
+
+      <aside class="visualiser-controls" aria-label="Visualiser controls">
+        <div class="control-group"><div class="control-heading"><span>01</span><div><h2>Choose a venue</h2><p>Start with the room that feels right.</p></div></div><div class="option-grid venue-options" id="venueOptions"></div></div>
+        <div class="control-group"><div class="control-heading"><span>02</span><div><h2>Choose a stage</h2><p>Set the mood at the heart of the room.</p></div></div><div class="option-grid design-options" id="stageOptions"></div></div>
+        <div class="control-group"><div class="control-heading"><span>03</span><div><h2>Choose a centrepiece</h2><p>Finish the tables with a detail that speaks to you.</p></div></div><div class="option-grid design-options" id="centrepieceOptions"></div></div>
+        <div class="visualiser-actions"><button class="btn btn-quiet" id="resetDesign" type="button">Reset</button><button class="btn btn-dark" id="saveDesign" type="button">♡ Save design</button><a class="btn btn-gold" id="quoteDesign" href="quote.html">Get a quote <span>→</span></a><p class="visualiser-note" id="visualiserNote" role="status" aria-live="polite">Save your concept to receive a unique design reference.</p></div>
+      </aside>
+    </section>
+
+    <section class="visualiser-footnote"><div><p class="eyebrow dark">Prototype catalogue</p><h2>A starting point for<br><em>your own story.</em></h2></div><p>These stages and centrepieces are temporary visual references. Once you have chosen a direction, we will shape it around your venue, colours and celebrations. Venue images are local reference assets or clearly marked placeholders until usage is approved.</p></section>
+  </main>
+
+  <div class="visualiser-sticky-actions"><button class="btn btn-dark" id="stickySave" type="button">♡ Save</button><a class="btn btn-gold" id="stickyQuote" href="quote.html">Get a quote</a></div>
+  <footer class="site-footer"><div class="footer-brand"><span class="brand-mark">IE</span><div><strong>IMANI EVENTS</strong><small>Wedding Décor & Event Styling</small></div></div><div class="footer-links"><a href="services.html">Décor</a><a href="gallery.html">Gallery</a><a href="about.html">About</a><a href="packages.html">Hire & Packages</a><a href="quote.html">Get a Quote</a></div><div class="footer-bottom"><span data-setting="business_location">Cardiff · South Wales · South West</span><span>© <span id="year"></span> Imani Events</span></div></footer>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0"></script>
+  <script src="site-settings.js"></script><script src="script.js"></script><script src="visualiser.js"></script>
+</body>
+</html>
