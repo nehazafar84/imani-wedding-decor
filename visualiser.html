@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="inner.css">
   <link rel="stylesheet" href="visualiser.css?v=3">
+  <link rel="stylesheet" href="visualiser-styling.css?v=5">
 </head>
 <body class="inner-page visualiser-page">
   <div class="inner-header visualiser-header">
@@ -29,13 +30,15 @@
       <div class="wrap">
         <p class="eyebrow dark">A first feeling, made visible</p>
         <h1>Visualise your <em>celebration.</em></h1>
-        <p>Start with an empty hall. Discover your stage, style your tables and compare the looks you love before requesting your booking.</p>
-        <div class="visualiser-steps" aria-label="Visualiser steps"><span class="is-current">01 Venue</span><span>02 Stage</span><span>03 Centrepiece</span><span>04 Your design</span></div>
+        <p>From an empty hall to your complete celebration. Choose the stage, tables, colours, lighting and finishing touches, then compare your favourite designs.</p>
+        <div class="visualiser-steps" aria-label="Visualiser steps"><span class="is-current">01 Venue</span><span>02 Stage & tables</span><span>03 Every detail</span><span>04 Save & book</span></div>
       </div>
     </section>
 
     <section class="visualiser-shell">
-      <div class="visualiser-preview-column">
+      <div class="visualiser-preview-column" id="visualiserWorkspace">
+        <div class="detail-view-tabs" aria-label="Preview views"><button type="button" class="scene-tab is-active" data-detail-view="hall">Full venue</button><button type="button" class="scene-tab" data-detail-view="table" disabled>Table close-up</button><button type="button" class="scene-tab" data-detail-view="layout" disabled>Seating plan</button></div>
+        <div id="hallView">
         <div class="scene-toolbar"><button id="emptyHall" class="scene-tab is-active" type="button">Empty hall</button><button id="styledHall" class="scene-tab" type="button" disabled>Your design</button><button id="restoreDesign" class="scene-tab" type="button" hidden>Open saved design</button></div>
         <div class="visualiser-preview" id="visualiserPreview" aria-label="Venue design preview">
           <div class="visualiser-before" id="visualiserBefore"></div>
@@ -49,14 +52,20 @@
           <div class="preview-reference" id="previewReference">Your empty hall</div>
         </div>
         <div class="preview-controls"><label for="beforeAfter">Before <span>Move the slider to compare</span> After</label><input id="beforeAfter" type="range" min="0" max="100" value="0" aria-label="Before and after comparison"></div>
+        </div>
+        <div id="tableView" class="table-detail-view" hidden><div id="tableDetail"></div><div id="placeDetail"></div><p>Your table and place setting. Colours are an approximate preview.</p></div>
+        <div id="layoutView" hidden><div id="layoutPlan" class="layout-plan" aria-label="Indicative seating plan"></div><p id="seatingNote" class="control-help"></p></div>
         <div class="preview-summary" id="previewSummary"></div>
         <p id="placeholderNote" class="placeholder-label">AI photographic concept. Venue photography awaiting approval.</p>
+        <details class="design-checklist"><summary>Your complete design choices</summary><ul id="designChecklist"></ul></details>
       </div>
 
       <aside class="visualiser-controls" aria-label="Visualiser controls">
         <div class="control-group"><div class="control-heading"><span>01</span><div><h2>Choose a venue</h2><p>Start with the room that feels right.</p></div></div><div class="option-grid venue-options" id="venueOptions"></div></div>
         <div class="control-group"><div class="control-heading"><span>02</span><div><h2>Choose a stage</h2><p>Set the mood at the heart of the room.</p></div></div><div class="option-grid design-options" id="stageOptions"></div></div>
         <div class="control-group"><div class="control-heading"><span>03</span><div><h2>Choose a centrepiece</h2><p>Finish the tables with a detail that speaks to you.</p></div></div><div class="option-grid design-options" id="centrepieceOptions"></div></div>
+        <div class="control-heading"><span>04</span><div><h2>Make it yours</h2><p>Open a section to style every detail.</p></div></div>
+        <div id="stylingOptions"></div>
         <button class="btn btn-quiet comparison-add" type="button" id="compareDesigns" disabled>+ Add to comparison</button><div class="visualiser-actions"><button class="btn btn-quiet" id="resetDesign" type="button">Reset</button><button class="btn btn-dark" id="saveDesign" type="button">♡ Save design</button><a class="btn btn-gold" id="quoteDesign" href="quote.html">Request booking <span>→</span></a><p class="visualiser-note" id="visualiserNote" role="status" aria-live="polite">Save your concept to receive a unique design reference.</p></div>
       </aside>
     </section>
@@ -65,9 +74,9 @@
     <section class="visualiser-footnote"><div><p class="eyebrow dark">Photographic concepts</p><h2>A starting point for<br><em>your own story.</em></h2></div><p>Explore realistic AI photographic décor concepts. These are not photographs of the named venues or confirmed Imani stock. We will confirm the actual room, décor, price and availability with you before any booking is agreed.</p></section>
   </main>
 
-  <div class="visualiser-sticky-actions"><button class="btn btn-dark" id="stickySave" type="button">♡ Save</button><a class="btn btn-gold" id="stickyQuote" href="quote.html">Request booking</a></div>
+  <div class="visualiser-sticky-actions"><button class="btn btn-quiet" id="viewResult" type="button">View result ↑</button><button class="btn btn-dark" id="stickySave" type="button">♡ Save</button><a class="btn btn-gold" id="stickyQuote" href="quote.html">Request booking</a></div>
   <footer class="site-footer"><div class="footer-brand"><span class="brand-mark">IE</span><div><strong>IMANI EVENTS</strong><small>Wedding Décor & Event Styling</small></div></div><div class="footer-links"><a href="services.html">Décor</a><a href="gallery.html">Gallery</a><a href="about.html">About</a><a href="packages.html">Hire & Packages</a><a href="quote.html">Get a Quote</a></div><div class="footer-bottom"><span data-setting="business_location">Cardiff · South Wales · South West</span><span>© <span id="year"></span> Imani Events</span></div></footer>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0"></script>
-  <script src="site-settings.js"></script><script src="script.js"></script><script src="visualiser.js?v=3"></script>
+  <script src="site-settings.js"></script><script src="script.js"></script><script src="visualiser-styling.js?v=5"></script><script src="visualiser-v2.js?v=5"></script>
 </body>
 </html>

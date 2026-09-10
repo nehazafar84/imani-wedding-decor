@@ -15,43 +15,59 @@
     "stage_bottom": 32
   },
   "S1": {
-    "image": "assets/visualiser/photo/stage-s1.webp",
+    "image": "assets/visualiser/styling/stage-s1.webp",
     "is_ai_concept": true
   },
   "S2": {
-    "image": "assets/visualiser/photo/stage-s2.webp",
+    "image": "assets/visualiser/styling/stage-s2.webp",
     "is_ai_concept": true
   },
   "S3": {
-    "image": "assets/visualiser/photo/stage-s3.webp",
+    "image": "assets/visualiser/styling/stage-s3.webp",
     "is_ai_concept": true
   },
   "S4": {
-    "image": "assets/visualiser/photo/stage-s4.webp",
+    "image": "assets/visualiser/styling/stage-s4.webp",
     "is_ai_concept": true
   },
   "S5": {
-    "image": "assets/visualiser/photo/stage-s5.webp",
+    "image": "assets/visualiser/styling/stage-s5.webp",
     "is_ai_concept": true
   },
   "C1": {
-    "image": "assets/visualiser/photo/table-c1.webp",
+    "image": "assets/visualiser/styling/centre-c1.webp",
     "is_ai_concept": true
   },
   "C2": {
-    "image": "assets/visualiser/photo/table-c2.webp",
+    "image": "assets/visualiser/styling/centre-c2.webp",
     "is_ai_concept": true
   },
   "C3": {
-    "image": "assets/visualiser/photo/table-c3.webp",
+    "image": "assets/visualiser/styling/centre-c3.webp",
     "is_ai_concept": true
   },
   "C4": {
-    "image": "assets/visualiser/photo/table-c4.webp",
+    "image": "assets/visualiser/styling/centre-c4.webp",
     "is_ai_concept": true
   },
   "C5": {
-    "image": "assets/visualiser/photo/table-c5.webp",
+    "image": "assets/visualiser/styling/centre-c5.webp",
+    "is_ai_concept": true
+  },
+  "S6": {
+    "image": "assets/visualiser/styling/stage-s6.webp",
+    "is_ai_concept": true
+  },
+  "C6": {
+    "image": "assets/visualiser/styling/centre-c6.webp",
+    "is_ai_concept": true
+  },
+  "C7": {
+    "image": "assets/visualiser/styling/centre-c7.webp",
+    "is_ai_concept": true
+  },
+  "C8": {
+    "image": "assets/visualiser/styling/centre-c8.webp",
     "is_ai_concept": true
   }
 }
