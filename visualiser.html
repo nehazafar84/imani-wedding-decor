@@ -11,7 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="inner.css">
-  <link rel="stylesheet" href="visualiser.css?v=2">
+  <link rel="stylesheet" href="visualiser.css?v=3">
 </head>
 <body class="inner-page visualiser-page">
   <div class="inner-header visualiser-header">
@@ -28,44 +28,46 @@
     <section class="visualiser-intro">
       <div class="wrap">
         <p class="eyebrow dark">A first feeling, made visible</p>
-        <h1>Visualise your<br><em>celebration.</em></h1>
-        <p>Choose a venue, a stage and a centrepiece. Your concept will come together instantly, ready to save or share with Imani Events.</p>
+        <h1>Visualise your <em>celebration.</em></h1>
+        <p>Start with an empty hall. Discover your stage, style your tables and compare the looks you love before requesting your booking.</p>
         <div class="visualiser-steps" aria-label="Visualiser steps"><span class="is-current">01 Venue</span><span>02 Stage</span><span>03 Centrepiece</span><span>04 Your design</span></div>
       </div>
     </section>
 
     <section class="visualiser-shell">
       <div class="visualiser-preview-column">
+        <div class="scene-toolbar"><button id="emptyHall" class="scene-tab is-active" type="button">Empty hall</button><button id="styledHall" class="scene-tab" type="button" disabled>Your design</button><button id="restoreDesign" class="scene-tab" type="button" hidden>Open saved design</button></div>
         <div class="visualiser-preview" id="visualiserPreview" aria-label="Venue design preview">
           <div class="visualiser-before" id="visualiserBefore"></div>
           <div class="visualiser-after" id="visualiserAfter">
-            <div class="stage-layer" id="stageLayer" aria-hidden="true"><div class="stage-arch"></div><div class="stage-florals"></div><div class="stage-sofa"></div><div class="stage-plinths"></div></div>
-            <div class="centrepiece-layer" id="centrepieceLayer" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+            <div class="stage-layer photographic-stage" id="stageLayer" aria-hidden="true"></div>
+            <div class="centrepiece-layer photographic-tables" id="centrepieceLayer" aria-hidden="true"></div>
           </div>
           <div class="preview-wash"></div>
-          <div class="preview-label preview-label-before">Venue reference</div><div class="preview-label preview-label-after">Your design</div>
+          <div class="preview-label preview-label-before">Empty hall</div><div class="preview-label preview-label-after">Your design</div>
           <div class="preview-slider-line" id="previewSliderLine"></div>
-          <div class="preview-reference" id="previewReference">IMANI-V1-S1-C1</div>
+          <div class="preview-reference" id="previewReference">Your empty hall</div>
         </div>
-        <div class="preview-controls"><label for="beforeAfter">Before <span>Move the slider to compare</span> After</label><input id="beforeAfter" type="range" min="0" max="100" value="58" aria-label="Before and after comparison"></div>
+        <div class="preview-controls"><label for="beforeAfter">Before <span>Move the slider to compare</span> After</label><input id="beforeAfter" type="range" min="0" max="100" value="0" aria-label="Before and after comparison"></div>
         <div class="preview-summary" id="previewSummary"></div>
-        <p id="placeholderNote" class="placeholder-label">Temporary venue room mockup.</p>
+        <p id="placeholderNote" class="placeholder-label">AI photographic concept. Venue photography awaiting approval.</p>
       </div>
 
       <aside class="visualiser-controls" aria-label="Visualiser controls">
         <div class="control-group"><div class="control-heading"><span>01</span><div><h2>Choose a venue</h2><p>Start with the room that feels right.</p></div></div><div class="option-grid venue-options" id="venueOptions"></div></div>
         <div class="control-group"><div class="control-heading"><span>02</span><div><h2>Choose a stage</h2><p>Set the mood at the heart of the room.</p></div></div><div class="option-grid design-options" id="stageOptions"></div></div>
         <div class="control-group"><div class="control-heading"><span>03</span><div><h2>Choose a centrepiece</h2><p>Finish the tables with a detail that speaks to you.</p></div></div><div class="option-grid design-options" id="centrepieceOptions"></div></div>
-        <div class="visualiser-actions"><button class="btn btn-quiet" id="resetDesign" type="button">Reset</button><button class="btn btn-dark" id="saveDesign" type="button">♡ Save design</button><a class="btn btn-gold" id="quoteDesign" href="quote.html">Get a quote <span>→</span></a><p class="visualiser-note" id="visualiserNote" role="status" aria-live="polite">Save your concept to receive a unique design reference.</p></div>
+        <button class="btn btn-quiet comparison-add" type="button" id="compareDesigns" disabled>+ Add to comparison</button><div class="visualiser-actions"><button class="btn btn-quiet" id="resetDesign" type="button">Reset</button><button class="btn btn-dark" id="saveDesign" type="button">♡ Save design</button><a class="btn btn-gold" id="quoteDesign" href="quote.html">Request booking <span>→</span></a><p class="visualiser-note" id="visualiserNote" role="status" aria-live="polite">Save your concept to receive a unique design reference.</p></div>
       </aside>
     </section>
 
-    <section class="visualiser-footnote"><div><p class="eyebrow dark">Prototype catalogue</p><h2>A starting point for<br><em>your own story.</em></h2></div><p>These stages and centrepieces are temporary visual references. Once you have chosen a direction, we will shape it around your venue, colours and celebrations. Venue images are local reference assets or clearly marked placeholders until usage is approved.</p></section>
+    <section id="comparisonSection" class="comparison-section" hidden><p class="eyebrow dark">Your shortlist</p><h2>Which feels like you?</h2><div class="comparison-list" id="comparisonList"></div><p>Choose a favourite, then request your booking. Availability and pricing will be confirmed by Imani Events.</p></section>
+    <section class="visualiser-footnote"><div><p class="eyebrow dark">Photographic concepts</p><h2>A starting point for<br><em>your own story.</em></h2></div><p>Explore realistic AI photographic décor concepts. These are not photographs of the named venues or confirmed Imani stock. We will confirm the actual room, décor, price and availability with you before any booking is agreed.</p></section>
   </main>
 
-  <div class="visualiser-sticky-actions"><button class="btn btn-dark" id="stickySave" type="button">♡ Save</button><a class="btn btn-gold" id="stickyQuote" href="quote.html">Get a quote</a></div>
+  <div class="visualiser-sticky-actions"><button class="btn btn-dark" id="stickySave" type="button">♡ Save</button><a class="btn btn-gold" id="stickyQuote" href="quote.html">Request booking</a></div>
   <footer class="site-footer"><div class="footer-brand"><span class="brand-mark">IE</span><div><strong>IMANI EVENTS</strong><small>Wedding Décor & Event Styling</small></div></div><div class="footer-links"><a href="services.html">Décor</a><a href="gallery.html">Gallery</a><a href="about.html">About</a><a href="packages.html">Hire & Packages</a><a href="quote.html">Get a Quote</a></div><div class="footer-bottom"><span data-setting="business_location">Cardiff · South Wales · South West</span><span>© <span id="year"></span> Imani Events</span></div></footer>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0"></script>
-  <script src="site-settings.js"></script><script src="script.js"></script><script src="visualiser.js"></script>
+  <script src="site-settings.js"></script><script src="script.js"></script><script src="visualiser.js?v=3"></script>
 </body>
 </html>

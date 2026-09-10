@@ -11,7 +11,7 @@
     visualiser_saved: params.get('saved') === '1'
   };
   const box=document.createElement('div'); box.className='full-row';
-  const label=document.createElement('p');label.textContent='Your design: '+reference;
+  const label=document.createElement('p');label.textContent=(params.get('intent')==='booking'?'Your booking request — chosen design: ':'Your design: ')+reference;
   const link=document.createElement('a');link.href='visualiser.html?'+new URLSearchParams({venue_code:codes[0],stage_code:codes[1],centrepiece_code:codes[2]});link.textContent='View / change design';
   box.append(label,link);document.getElementById('quoteForm')?.prepend(box);
 })();
