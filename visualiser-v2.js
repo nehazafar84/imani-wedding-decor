@@ -8,7 +8,7 @@
   const params=new URLSearchParams(location.search),ownerPreview=params.get('preview')==='owner';
   let input={},invalidInput=false;
   try{input=params.has('styling')?JSON.parse(params.get('styling')):{};M.normalize(input,true)}catch{input={};invalidInput=true}
-  const state={items:[],assets:{},venue:params.get('venue_code')||'V1',stage:params.get('stage_code')||'',centrepiece:params.get('centrepiece_code')||'',config:M.normalize(input),slider:0,saved:false,busy:false,view:'hall'};
+  const state={items:[],assets:{},venue:params.get('venue_code')||'V1',stage:params.get('stage_code')||'',centrepiece:params.get('centrepiece_code')||'',config:M.normalize(input),mode:'essential',slider:0,saved:false,busy:false,view:'hall'};
   let saved=storage.get('imani-design-v2')||storage.get('imani-design-v1'),comparisons=[],timer;
   const session=storage.get('imani-visualiser-session')||crypto.randomUUID();storage.set('imani-visualiser-session',session);
   const rows=kind=>state.items.filter(r=>r.kind===kind);
@@ -16,7 +16,7 @@
   const complete=()=>kinds.every(k=>item(k));
   const base=(s=state)=>'IMANI-'+kinds.map(k=>s[k]).join('-');
   const reference=(s=state)=>base(s)+'-'+M.fingerprint(s.config);
-  const snapshot=()=>({venue:state.venue,stage:state.stage,centrepiece:state.centrepiece,config:M.normalize(state.config),reference:reference()});
+  const snapshot=()=>({venue:state.venue,stage:state.stage,centrepiece:state.centrepiece,config:M.normalize(state.config),mode:state.mode,reference:reference()});
   const message=text=>$('visualiserNote').textContent=text;
   function photo(row){if(!row)return '';const own=row.layer_image_url||row.image_url;return safeImage(own&&!own.includes('assets/visualiser/room-')?own:state.assets[row.code]?.image)}
   const asset=(group,id)=>M.find(group,id)?.image;
@@ -37,15 +37,13 @@
   }
   function scene(s){
     if(!item('stage',s))return '';
-    const c=s.config,stage=item('stage',s),hasTables=Boolean(item('centrepiece',s));
-    const bottom=state.assets[s.venue]?.stage_bottom||34;
-    let html=img(asset('backdrop',c.backdrop),'decor-backdrop','bottom:'+bottom+'%')+img(photo(stage),'decor-stage','bottom:'+bottom+'%;filter:'+M.filter('flowers',c.flowers));
-    html+=img(asset('sofa',c.sofa),'decor-sofa','bottom:'+(bottom-1)+'%');
-    html+=img(asset('walkway',c.walkway),'decor-walkway','height:'+(100-bottom)+'%');
-    if(hasTables)html+=M.layout(c).map(p=>'<div class="guest-table" style="left:'+p.x+'%;bottom:'+p.y+'%;width:'+p.w+'%;z-index:'+(30-Math.round(p.y))+'">'+tableMarkup(s)+'</div>').join('');
-    if(c.aisle!=='none')for(let i=0;i<3;i++)for(const side of [-1,1])html+=img(asset('aisle',c.aisle),'decor-aisle','left:'+(50+side*(9+i*6))+'%;bottom:'+(30-i*12)+'%;width:'+(5+i*2)+'%;z-index:'+(8+i*12));
-    html+=img(asset('entrance',c.entrance),'decor-entrance');
-    html+=c.addons.map(id=>img(M.addons.find(a=>a.id===id).image,'decor-addon addon-'+id)).join('');
+    const c=s.config,stage=item('stage',s),hasTables=Boolean(item('centrepiece',s)),plan=M.compose(s.venue,c,{mode:s.mode||state.mode});
+    const b=plan.stage,boxStyle=x=>'left:'+x.left+'%;bottom:'+x.bottom+'%;width:'+x.width+'%;height:'+x.height+'%';
+    let html='<div class="semantic-zone stage-zone" data-zone="stage" style="'+boxStyle(b)+'">'+img(asset('backdrop',c.backdrop),'decor-backdrop','filter:'+M.filter('flowers',c.flowers))+img(photo(stage),'decor-stage','filter:'+M.filter('flowers',c.flowers))+img(asset('sofa',c.sofa),'decor-sofa')+'</div>';
+    if(c.walkway!=='none'&&plan.aisle.active){const a=plan.aisle;html+='<div class="decor-walkway" data-zone="aisle" style="left:'+(a.center-a.nearWidth/2)+'%;bottom:'+a.nearBottom+'%;width:'+a.nearWidth+'%;height:'+(a.farBottom-a.nearBottom)+'%;--far-width:'+(a.farWidth/a.nearWidth*100)+'%;background-image:url('+esc(asset('walkway',c.walkway))+')"></div>'}
+    if(c.aisle!=='none')html+=plan.florals.map(p=>img(asset('aisle',c.aisle),'decor-aisle side-'+(p.side<0?'left':'right'),'left:'+p.x+'%;bottom:'+p.bottom+'%;width:'+p.width+'%;z-index:'+p.z)).join('');
+    if(hasTables)html+=plan.guests.map(p=>'<div class="guest-table" data-zone="guest-table" style="left:'+p.x+'%;bottom:'+p.bottom+'%;width:'+p.width+'%;z-index:'+(45-Math.round(p.bottom))+'">'+tableMarkup(s)+'</div>').join('');
+    html+=plan.extras.map(x=>{const src=x.id==='entrance'?asset('entrance',c.entrance):M.addons.find(a=>a.id===x.id)?.image;return img(src,'decor-addon addon-'+x.id+' zone-'+x.kind,boxStyle(x.box))}).join('');
     return html+'<div class="lighting-overlay lighting-'+c.lighting+'"></div>';
   }
   function quoteURL(){return 'quote.html?'+new URLSearchParams({visualiser:'1',intent:'booking',venue:item('venue')?.name||'',venue_code:state.venue,stage_code:state.stage,centrepiece_code:state.centrepiece,design_reference:base(),configuration_reference:reference(),styling:JSON.stringify(state.config),saved:state.saved?'1':'0'})}
@@ -77,17 +75,34 @@
   function renderOptions(kind){
     const target=$(kind+'Options'),scroll=target.scrollLeft;
     target.innerHTML=rows(kind).map(row=>'<button class="visual-option '+(state[kind]===row.code?'is-selected':'')+'" type="button" '+(kind==='centrepiece'&&!state.stage?'disabled ':'')+'data-code="'+esc(row.code)+'" aria-pressed="'+(state[kind]===row.code)+'">'+(photo(row)?'<img loading="lazy" src="'+esc(photo(row))+'" alt="">':'<span class="photo-unavailable">Image pending</span>')+'<span class="option-code">'+esc(row.code)+'</span><strong>'+esc(row.name)+'</strong><small>'+esc((kind==='stage'?stageStyles:cpStyles)[row.code]||row.short_description)+'</small></button>').join('');target.scrollLeft=scroll;
-    target.querySelectorAll('button').forEach(b=>b.onclick=()=>{if(state[kind]===b.dataset.code)return;state[kind]=b.dataset.code;if(kind==='venue'){state.stage='';state.centrepiece='';state.config=M.normalize();state.view='hall'}changed();kinds.forEach(renderOptions);renderStyling();message(complete()?'Style every detail below, then compare, save or request your booking.':kind==='venue'?'Your empty hall is ready. Choose a stage.':'Choose your centrepiece to add the guest tables.')});
+    target.querySelectorAll('button').forEach(b=>b.onclick=()=>{if(state[kind]===b.dataset.code)return;state[kind]=b.dataset.code;if(kind==='venue'){state.stage='';state.centrepiece='';state.config=M.normalize();state.mode='essential';state.view='hall'}changed();kinds.forEach(renderOptions);renderPresets();renderQuickAisle();renderStyling();progressive();message(complete()?'Your balanced composition is ready. Refine it or request your booking.':kind==='venue'?'Your empty hall is ready. Choose a stage.':'Now add an optional aisle, then your centrepieces.')});
+  }
+  function renderPresets(){
+    $('stylePresets').innerHTML=M.presets.map(p=>'<button type="button" data-preset="'+p.id+'"><strong>'+esc(p.name)+'</strong><small>'+esc(p.id==='classic-luxury'?'Timeless gold & ivory':p.id==='modern-ivory'?'Clean, architectural ivory':'Soft blush & rose gold')+'</small></button>').join('');
+    $('stylePresets').querySelectorAll('button').forEach(b=>b.onclick=()=>{const p=M.presets.find(x=>x.id===b.dataset.preset);if(!p)return;state.stage=item('stage',{stage:p.stage})?p.stage:rows('stage')[0]?.code||'';state.centrepiece=item('centrepiece',{centrepiece:p.centrepiece})?p.centrepiece:rows('centrepiece')[0]?.code||'';state.config=M.normalize({...M.defaults,...p.config});state.mode='full';changed();kinds.forEach(renderOptions);renderPresets();renderQuickAisle();renderStyling();progressive();message(p.name+' loaded and professionally arranged for '+(item('venue')?.name||'this venue')+'.')});
+  }
+  function renderQuickAisle(){
+    const looks=[{id:'none',name:'No aisle',walkway:'none',aisle:'none'},{id:'ivory',name:'Ivory & florals',walkway:'ivory',aisle:'flowers'},{id:'mirror',name:'Mirror & candles',walkway:'mirror',aisle:'candles'}];
+    $('quickAisleOptions').innerHTML=looks.map(o=>'<button type="button" data-aisle-look="'+o.id+'" class="'+(state.config.walkway===o.walkway&&state.config.aisle===o.aisle?'is-selected':'')+'" '+(!state.stage?'disabled':'')+'>'+o.name+'</button>').join('');
+    $('quickAisleOptions').querySelectorAll('button').forEach(b=>b.onclick=()=>{const o=looks.find(x=>x.id===b.dataset.aisleLook);state.config=M.normalize({...state.config,walkway:o.walkway,aisle:o.aisle});changed();renderQuickAisle();renderStyling();message(o.id==='none'?'A clean stage-first composition is ready.':'The aisle now ends precisely at the stage edge.')});
+  }
+  function progressive(){
+    const hasStage=Boolean(item('stage'));
+    for(const id of ['aisleControl','centrepieceControl'])$(id).classList.toggle('is-locked',!hasStage);
+    $('detailsHeading').classList.toggle('is-locked',!hasStage);
+    $('designMode').classList.toggle('is-locked',!hasStage);
+    $('stylingOptions').classList.toggle('is-locked',!hasStage);
+    $('designMode').querySelectorAll('button').forEach(b=>{b.disabled=!hasStage;b.classList.toggle('is-selected',b.dataset.mode===state.mode)});
   }
   function renderStyling(){
-    const sections=[['Tables & chairs',['table','chair','chairColour','layout']],['Table colours & place settings',['linen','napkin','charger','cutlery']],['Stage & flowers',['backdrop','sofa','flowers']],['Aisle, entrance & walkway',['aisle','entrance','walkway']],['Lighting & finishing touches',['lighting']]];
+    const sections=[['Stage & flowers',['backdrop','sofa','flowers']],['Tables & chairs',['table','chair','chairColour','layout']],['Table colours & place settings',['linen','napkin','charger','cutlery']],['Aisle & welcome',['aisle','entrance','walkway']],['Lighting & finishing touches',['lighting']]];
     const open=new Set([...$('stylingOptions').querySelectorAll('details[open]')].map(x=>x.dataset.section));
     $('stylingOptions').innerHTML=sections.map(([title,keys],index)=>'<details class="styling-section" data-section="'+index+'" '+(open.has(String(index))?'open':'')+'><summary>'+title+'<span>+</span></summary><div class="styling-section-body">'+keys.map(key=>{
       const g=M.groups.find(x=>x.id===key);return '<fieldset class="styling-group" '+(!state.stage?'disabled':'')+'><legend>'+g.name+'</legend><div class="styling-choices '+(g.options.some(o=>o.hex)?'swatch-choices':'')+'">'+g.options.map(o=>'<button type="button" data-style="'+key+'" data-value="'+o.id+'" aria-pressed="'+(state.config[key]===o.id)+'" class="styling-option '+(state.config[key]===o.id?'is-selected':'')+'">'+(o.image?img(o.image,'choice-photo'):o.hex?'<span class="colour-swatch" style="background:'+o.hex+'"></span>':'')+'<span>'+o.name+'</span></button>').join('')+'</div></fieldset>';
-    }).join('')+(index===0?'<label class="quantity-control" for="tableQuantity">Table quantity <output id="tableQuantityValue">'+state.config.tableCount+'</output><input id="tableQuantity" type="range" min="1" max="12" value="'+state.config.tableCount+'" '+(!state.stage||['u','sweetheart'].includes(state.config.table)?'disabled':'')+'></label><p class="control-help">U-shape and sweetheart are single arrangements. Choose round or banquet for multiple guest tables.</p>':'')+(index===4?'<fieldset class="styling-group" '+(!state.stage?'disabled':'')+'><legend>Optional add-ons</legend><div class="styling-choices">'+M.addons.map(a=>'<button type="button" class="styling-option '+(state.config.addons.includes(a.id)?'is-selected':'')+'" data-addon="'+a.id+'" aria-pressed="'+state.config.addons.includes(a.id)+'">'+img(a.image,'choice-photo')+'<span>'+a.name+'</span></button>').join('')+'</div></fieldset>':'')+'</div></details>').join('');
-    $('stylingOptions').querySelectorAll('[data-style]').forEach(b=>b.onclick=()=>{state.config=M.normalize({...state.config,[b.dataset.style]:b.dataset.value});changed();renderStyling()});
+    }).join('')+(index===1?'<label class="quantity-control" for="tableQuantity">Table quantity <output id="tableQuantityValue">'+state.config.tableCount+'</output><input id="tableQuantity" type="range" min="1" max="12" value="'+state.config.tableCount+'" '+(!state.stage||['u','sweetheart'].includes(state.config.table)?'disabled':'')+'></label><p class="control-help">The preview shows a clear representative arrangement; your final floor plan is confirmed with the venue.</p>':'')+(index===4&&state.mode==='full'?'<fieldset class="styling-group" '+(!state.stage?'disabled':'')+'><legend>Curated extras</legend><div class="styling-choices">'+M.addons.map(a=>'<button type="button" class="styling-option '+(state.config.addons.includes(a.id)?'is-selected':'')+'" data-addon="'+a.id+'" aria-pressed="'+state.config.addons.includes(a.id)+'">'+img(a.image,'choice-photo')+'<span>'+a.name+'</span></button>').join('')+'</div><p class="control-help">Full Design automatically removes any extra that crowds the room or repeats another feature.</p></fieldset>':'')+'</div></details>').join('');
+    $('stylingOptions').querySelectorAll('[data-style]').forEach(b=>b.onclick=()=>{state.config=M.normalize({...state.config,[b.dataset.style]:b.dataset.value});changed();renderQuickAisle();renderStyling()});
     $('stylingOptions').querySelectorAll('[data-addon]').forEach(b=>b.onclick=()=>{const id=b.dataset.addon,list=state.config.addons;state.config=M.normalize({...state.config,addons:list.includes(id)?list.filter(x=>x!==id):[...list,id]});changed();renderStyling()});
-    $('tableQuantity').oninput=e=>{state.config.tableCount=Number(e.target.value);$('tableQuantityValue').textContent=e.target.value;changed()};
+    if($('tableQuantity'))$('tableQuantity').oninput=e=>{state.config.tableCount=Number(e.target.value);$('tableQuantityValue').textContent=e.target.value;changed()};
   }
   function changed(){state.saved=false;state.slider=0;preview();clearTimeout(timer);timer=setTimeout(()=>{if(complete())kinds.forEach(k=>record(k,snapshot()).catch(()=>{}))},500)}
   async function record(kind,s){if(ownerPreview)return;const {error}=await client.from('visualiser_selections').insert({id:crypto.randomUUID(),session_key:session,venue_code:s.venue,stage_code:s.stage,centrepiece_code:s.centrepiece,design_reference:base(s),configuration:s.config,configuration_reference:s.reference,event_kind:kind,saved:kind==='save'});if(error&&error.code!=='23505')throw error}
@@ -96,14 +111,15 @@
     const local=storage.set('imani-design-v2',s);if(local){saved=s;$('restoreDesign').hidden=false}
     try{await record('save',s);state.saved=reference()===s.reference;message(local?'Your complete design is saved on this device. All choices will go with your booking request.':'Saved online. Keep your design link to reopen it.')}catch{state.saved=false;message(local?'Your complete design is saved on this device. Online save is unavailable; all choices can still be sent with your booking request.':'Save is unavailable. You can still request a booking with all your choices.')}finally{state.busy=false;preview()}
   }
-  function restore(s){kinds.forEach(k=>state[k]=s[k]);state.config=M.normalize(s.config);kinds.forEach(k=>{if(!item(k))state[k]=k==='venue'?rows(k)[0]?.code||'':''});state.slider=0;state.saved=complete()&&saved?.reference===reference();kinds.forEach(renderOptions);renderStyling();preview()}
+  function restore(s){kinds.forEach(k=>state[k]=s[k]);state.config=M.normalize(s.config);state.mode=s.mode==='full'?'full':'essential';kinds.forEach(k=>{if(!item(k))state[k]=k==='venue'?rows(k)[0]?.code||'':''});state.slider=0;state.saved=complete()&&saved?.reference===reference();kinds.forEach(renderOptions);renderPresets();renderQuickAisle();renderStyling();progressive();preview()}
   $('saveDesign').onclick=save;$('stickySave').onclick=save;
-  $('resetDesign').onclick=()=>{if(!state.items.length)return;clearTimeout(timer);state.stage='';state.centrepiece='';state.config=M.normalize();state.view='hall';state.saved=false;state.slider=0;kinds.forEach(renderOptions);renderStyling();preview();message('Back to the empty hall. Your saved design is still available.')};
+  $('resetDesign').onclick=()=>{if(!state.items.length)return;clearTimeout(timer);state.stage='';state.centrepiece='';state.config=M.normalize();state.mode='essential';state.view='hall';state.saved=false;state.slider=0;kinds.forEach(renderOptions);renderPresets();renderQuickAisle();renderStyling();progressive();preview();message('Back to the empty hall. Start with one stage; everything else remains optional.')};
   $('beforeAfter').oninput=e=>{state.slider=Number(e.target.value);preview()};
   $('emptyHall').onclick=()=>{state.slider=100;preview()};$('styledHall').onclick=()=>{state.slider=0;preview()};
   $('restoreDesign').hidden=!saved;$('restoreDesign').onclick=()=>{if(saved){restore(saved);message('Saved design opened. Please review the available choices.')}};
   document.querySelectorAll('[data-detail-view]').forEach(b=>b.onclick=()=>{state.view=b.dataset.detailView;preview()});
   $('viewResult').onclick=()=>{$('visualiserWorkspace').scrollIntoView({behavior:'smooth',block:'start'})};
+  $('designMode').querySelectorAll('button').forEach(b=>b.onclick=()=>{state.mode=b.dataset.mode;if(state.mode==='essential')state.config=M.normalize({...state.config,addons:[]});changed();renderStyling();progressive();message(state.mode==='full'?'Full Design is on. Only balanced, non-repeating extras will be shown.':'Essential mode keeps the scene calm and focused.')});
   for(const id of ['quoteDesign','stickyQuote'])$(id).onclick=e=>{if(!complete()){e.preventDefault();message('Choose a stage and centrepiece first.');$('stageOptions').scrollIntoView({behavior:'smooth',block:'center'})}};
   $('compareDesigns').onclick=()=>{
     if(!complete())return;const s=snapshot();if(comparisons.some(x=>x.reference===s.reference)){message('This complete design is already in your shortlist.');return}
@@ -117,7 +133,7 @@
       let query=catalog.from('visualiser_items').select('*');if(!ownerPreview)query=query.eq('is_active',true);
       const [result,response]=await Promise.all([query.order('sort_order').order('code'),fetch('assets/visualiser/photographic-catalogue.json')]);if(result.error||!response.ok)throw new Error('Catalogue unavailable');state.items=result.data||[];state.assets=await response.json();if(kinds.some(k=>!rows(k).length))throw new Error('Catalogue incomplete');
       let changed=false;kinds.forEach(k=>{if(state[k]&&!item(k)){state[k]=k==='venue'?rows(k)[0].code:'';changed=true}});if(!item('venue'))state.venue=rows('venue')[0].code;
-      state.saved=complete()&&saved?.reference===reference();kinds.forEach(renderOptions);renderStyling();preview();message(changed||invalidInput?'Some previous choices were unavailable. Please review your design.':'Start with the empty hall, then choose a stage and style every detail.');
+      state.saved=complete()&&saved?.reference===reference();kinds.forEach(renderOptions);renderPresets();renderQuickAisle();renderStyling();progressive();preview();message(changed||invalidInput?'Some previous choices were unavailable. Please review your design.':'Start with the empty hall, then choose a stage. Aisle, centrepieces and extras are added only when you want them.');
     }catch{state.items=[];buttons();message('The catalogue is temporarily unavailable. Refresh or use the standard quote form.');for(const id of ['quoteDesign','stickyQuote']){$(id).href='quote.html';$(id).removeAttribute('aria-disabled');$(id).onclick=null}}
   }
   load();

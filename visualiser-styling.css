@@ -10,3 +10,22 @@
 @media(min-width:641px){.table-detail-view{display:grid;grid-template-columns:minmax(0,1fr) 25%;align-items:center;gap:10px}.table-detail-view #tableDetail{width:100%;margin:0}.table-detail-view .setting-detail{width:100%;margin:0}.table-detail-view>p{grid-column:1/-1}}
 .shape-round .place-setting:nth-of-type(2){bottom:58%}
 .guest-table:has(.shape-banquet){aspect-ratio:1.8}.guest-table:has(.shape-sweetheart){aspect-ratio:1.45}.guest-table:has(.shape-u){aspect-ratio:2}.detail-composition.shape-u{aspect-ratio:2}
+
+/* Venue-aware composition engine. All scene elements are anchored to semantic
+   zones generated from the active room profile; there are no drag targets. */
+.semantic-zone{position:absolute;pointer-events:none}.stage-zone{z-index:12;overflow:visible;filter:drop-shadow(0 3px 3px #24180e35)}
+.stage-zone .decor-stage,.stage-zone .decor-backdrop{inset:0;width:100%;height:100%;bottom:auto;left:auto;object-fit:contain;object-position:center bottom}
+.stage-zone .decor-backdrop{z-index:1;opacity:.92}.stage-zone .decor-stage{z-index:2}.stage-zone .decor-sofa{left:38%;bottom:1%;width:24%;height:30%;z-index:3;object-fit:contain;object-position:center bottom}
+.decor-walkway{position:absolute;z-index:5;pointer-events:none;background-position:center;background-repeat:no-repeat;background-size:100% 100%;clip-path:polygon(calc((100% - var(--far-width))/2) 0,calc((100% + var(--far-width))/2) 0,100% 100%,0 100%);filter:drop-shadow(0 2px 2px #24180e22)}
+.decor-aisle{height:auto;max-height:15%;aspect-ratio:1;transform:translateX(-50%);object-fit:contain;object-position:center bottom;transform-origin:center bottom;pointer-events:none}
+.decor-aisle.side-right{scale:-1 1}
+.guest-table{aspect-ratio:1.45;transform:translateX(-50%);transform-origin:center bottom;filter:drop-shadow(0 2px 2px #24180e30)}
+.decor-addon[style]{right:auto;object-fit:contain;object-position:center bottom;pointer-events:none;transform:none}.zone-cake{z-index:16}.zone-welcome{z-index:15}.zone-extra{z-index:14}
+.lighting-overlay{pointer-events:none}
+
+.style-presets{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.style-presets button,.quick-aisle-options button,.design-mode button{border:1px solid #ddd3c7;background:#fbf9f5;color:#544536;border-radius:4px;cursor:pointer;font:500 .72rem/1.25 'DM Sans',sans-serif;padding:10px 8px}.style-presets button{min-height:62px;text-align:left}.style-presets strong,.style-presets small{display:block}.style-presets small{color:#8b7a68;font-size:.61rem;margin-top:4px}.style-presets button:hover,.quick-aisle-options button:hover,.design-mode button:hover{border-color:#a68152;background:#f4ece1}
+.quick-aisle-options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.quick-aisle-options button.is-selected,.design-mode button.is-selected{background:#251e19;border-color:#251e19;color:#fff}
+.design-mode{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin:-4px 0 14px 46px}.progressive-control.is-locked{opacity:.42}.progressive-control.is-locked button,.progressive-control.is-locked input{pointer-events:none}#stylingOptions.is-locked{display:none}.styling-section{background:#fff}.styling-section>summary{padding:13px 0}.styling-section-body{padding-bottom:14px}.choice-photo{height:58px}.visualiser-controls{padding:17px 16px}.control-group{padding-bottom:19px;margin-bottom:19px}.control-heading{margin-bottom:11px}.control-heading h2{font-size:1.35rem}.control-heading p{font-size:.7rem}.visual-option{padding:8px}.visual-option img{height:74px}.venue-options .visual-option img{height:52px}.visualiser-shell{grid-template-columns:minmax(0,2fr) minmax(285px,.62fr);gap:22px;max-width:1760px;padding-left:3vw;padding-right:3vw}.visualiser-preview{aspect-ratio:16/10;box-shadow:0 20px 54px #3021171f}.visualiser-controls{max-width:390px;justify-self:stretch}
+
+@media(max-width:1000px){.visualiser-shell{grid-template-columns:1fr}.visualiser-controls{max-width:none}.visualiser-preview{aspect-ratio:16/10}}
+@media(max-width:640px){.style-presets{display:flex;overflow-x:auto}.style-presets button{flex:0 0 135px}.quick-aisle-options{grid-template-columns:1fr}.design-mode{margin-left:0}.visualiser-preview{aspect-ratio:3/2}.visualiser-controls{padding:20px 5vw}.choice-photo{height:78px}}

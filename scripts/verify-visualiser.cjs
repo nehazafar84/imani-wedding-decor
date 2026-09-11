@@ -8,6 +8,19 @@ assert.equal(M.normalize({table:'u',tableCount:12}).tableCount,1);
 assert.equal(M.normalize({table:'sweetheart',tableCount:8}).tableCount,1);
 for(const count of [1,4,8,12])for(const layout of ['aisle','rows','crescent'])assert.equal(M.layout({...normal,tableCount:count,layout}).length,count);
 assert.equal(M.fingerprint({...normal,addons:['screen','cake']}),M.fingerprint({...normal,addons:['cake','screen']}));
+assert.deepEqual(Object.keys(M.profiles),['V1','V2','V3']);
+assert.notDeepEqual(M.profiles.V1.stage,M.profiles.V2.stage);assert.notDeepEqual(M.profiles.V2.stage,M.profiles.V3.stage);
+for(const venue of Object.keys(M.profiles)){
+  const config=M.normalize({...normal,backdrop:'arches',aisle:'flowers',walkway:'ivory',entrance:'arch',tableCount:12,addons:['cake','sign','photobooth','screen']});
+  const plan=M.compose(venue,config,{mode:'full'}),stage=plan.stage;
+  assert.ok(stage.left>=0&&stage.bottom>=0&&stage.left+stage.width<=100&&stage.bottom+stage.height<=100&&stage.height<=plan.profile.stage.maxHeight);
+  assert.equal(plan.aisle.farBottom,stage.bottom);assert.ok(plan.aisle.farBottom-plan.aisle.nearBottom<=plan.aisle.maxLength);
+  assert.equal(plan.florals.length,8);
+  for(let i=0;i<4;i++){const left=plan.florals[i*2],right=plan.florals[i*2+1];assert.equal(left.index,right.index);assert.equal(left.bottom,right.bottom);assert.equal(left.width,right.width);assert.equal(left.x+right.x,plan.aisle.center*2);if(i)assert.ok(left.width<plan.florals[(i-1)*2].width)}
+  const cake=plan.extras.find(x=>x.id==='cake'),welcome=plan.extras.find(x=>x.kind==='welcome');assert.deepEqual(cake.box,plan.profile.cake);assert.deepEqual(welcome.box,plan.profile.welcome);
+  for(const guest of plan.guests){assert.ok(!M.overlaps(guest.box,stage));for(const extra of plan.extras)assert.ok(!M.overlaps(guest.box,extra.box))}
+  assert.equal(plan.hidden.outdoor,true);assert.equal(plan.hidden.sign,true);assert.equal(plan.hidden.screen,true);
+}
 let handler,inserted=[];
 const context={Request,Response,console,ImaniStyling:M,Deno:{env:{get:()=> 'test-only'},serve:fn=>{handler=fn}},createClient:()=>({from:table=>({select:()=>({eq:()=>({in:async()=>({data:[{kind:'venue',code:'V1',name:'ICC Wales'},{kind:'stage',code:'S1',name:'Royal Bloom'},{kind:'centrepiece',code:'C1',name:'Classic Tall'}],error:null})})}),insert:async payload=>{inserted.push({table,payload});return {error:null}}})})};
 const source=fs.readFileSync(require.resolve('../supabase/functions/submit-enquiry/index.ts'),'utf8').replace(/^import .*;\n/gm,'');
