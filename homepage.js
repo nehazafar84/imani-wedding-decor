@@ -1,29 +1,4 @@
 (() => {
-  const tabs = Array.from(document.querySelectorAll('.home-mood-tabs [role="tab"]'));
-  const panels = Array.from(document.querySelectorAll('.home-mood-panel'));
-  const selectMood = (tab, moveFocus = false) => {
-    tabs.forEach(item => {
-      const selected = item === tab;
-      item.setAttribute('aria-selected', String(selected));
-      item.tabIndex = selected ? 0 : -1;
-    });
-    panels.forEach(panel => { panel.hidden = panel.id !== tab.getAttribute('aria-controls'); });
-    if (moveFocus) tab.focus();
-  };
-  tabs.forEach((tab, index) => {
-    tab.addEventListener('click', () => selectMood(tab));
-    tab.addEventListener('keydown', event => {
-      let next;
-      if (event.key === 'ArrowRight') next = (index + 1) % tabs.length;
-      if (event.key === 'ArrowLeft') next = (index - 1 + tabs.length) % tabs.length;
-      if (event.key === 'Home') next = 0;
-      if (event.key === 'End') next = tabs.length - 1;
-      if (next === undefined) return;
-      event.preventDefault();
-      selectMood(tabs[next], true);
-    });
-  });
-
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   if ('IntersectionObserver' in window && !reducedMotion.matches) {
     const observer = new IntersectionObserver(entries => {
@@ -40,9 +15,7 @@
     });
     reducedMotion.addEventListener('change', event => {
       if (!event.matches) return;
-      document.querySelectorAll('.home-awaiting').forEach(element => {
-        element.classList.remove('home-awaiting');
-      });
+      document.querySelectorAll('.home-awaiting').forEach(element => element.classList.remove('home-awaiting'));
       observer.disconnect();
     });
   }
@@ -56,10 +29,7 @@
       navigation.inert = isMobile && !isOpen;
       document.body.classList.toggle('menu-active', isMobile && isOpen);
     };
-    new MutationObserver(synchronizeMenu).observe(menu, {
-      attributes: true,
-      attributeFilter: ['aria-expanded']
-    });
+    new MutationObserver(synchronizeMenu).observe(menu, { attributes: true, attributeFilter: ['aria-expanded'] });
     window.addEventListener('resize', synchronizeMenu);
     synchronizeMenu();
     document.addEventListener('keydown', event => {
@@ -68,12 +38,42 @@
       const links = Array.from(navigation.querySelectorAll('a[href]'));
       const last = links[links.length - 1];
       if (event.shiftKey && document.activeElement === menu) {
-        event.preventDefault();
-        last?.focus();
+        event.preventDefault(); last?.focus();
       } else if (!event.shiftKey && document.activeElement === last) {
-        event.preventDefault();
-        menu.focus();
+        event.preventDefault(); menu.focus();
       }
     });
+  }
+
+  const cards = Array.from(document.querySelectorAll('[data-gallery]'));
+  const dialog = document.querySelector('.home-lightbox');
+  const image = dialog?.querySelector('.home-lightbox-image');
+  const title = dialog?.querySelector('#lightboxTitle');
+  const count = dialog?.querySelector('.home-lightbox-count');
+  let activeIndex = 0;
+  let opener;
+  const showImage = index => {
+    activeIndex = (index + cards.length) % cards.length;
+    const card = cards[activeIndex];
+    const photo = card.querySelector('img');
+    image.src = photo.src;
+    image.alt = photo.alt;
+    image.width = Number(photo.getAttribute('width'));
+    image.height = Number(photo.getAttribute('height'));
+    title.textContent = card.querySelector('strong').textContent;
+    count.textContent = `${String(activeIndex + 1).padStart(2, '0')} / ${String(cards.length).padStart(2, '0')} · AI-CREATED CONCEPT`;
+  };
+  if (dialog && cards.length) {
+    cards.forEach((card, index) => card.addEventListener('click', () => {
+      opener = card; showImage(index); dialog.showModal();
+    }));
+    dialog.querySelector('.home-lightbox-close').addEventListener('click', () => dialog.close());
+    dialog.querySelector('.home-lightbox-previous').addEventListener('click', () => showImage(activeIndex - 1));
+    dialog.querySelector('.home-lightbox-next').addEventListener('click', () => showImage(activeIndex + 1));
+    dialog.addEventListener('keydown', event => {
+      if (event.key === 'ArrowLeft') { event.preventDefault(); showImage(activeIndex - 1); }
+      if (event.key === 'ArrowRight') { event.preventDefault(); showImage(activeIndex + 1); }
+    });
+    dialog.addEventListener('close', () => opener?.focus());
   }
 })();
