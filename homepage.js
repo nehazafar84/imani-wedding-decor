@@ -20,31 +20,6 @@
     });
   }
 
-  const menu = document.querySelector('.menu-toggle');
-  const navigation = document.getElementById('homeNavigation');
-  if (menu && navigation) {
-    const synchronizeMenu = () => {
-      const isMobile = window.matchMedia('(max-width: 800px)').matches;
-      const isOpen = menu.getAttribute('aria-expanded') === 'true';
-      navigation.inert = isMobile && !isOpen;
-      document.body.classList.toggle('menu-active', isMobile && isOpen);
-    };
-    new MutationObserver(synchronizeMenu).observe(menu, { attributes: true, attributeFilter: ['aria-expanded'] });
-    window.addEventListener('resize', synchronizeMenu);
-    synchronizeMenu();
-    document.addEventListener('keydown', event => {
-      if (event.key !== 'Tab' || menu.getAttribute('aria-expanded') !== 'true' ||
-          !window.matchMedia('(max-width: 800px)').matches) return;
-      const links = Array.from(navigation.querySelectorAll('a[href]'));
-      const last = links[links.length - 1];
-      if (event.shiftKey && document.activeElement === menu) {
-        event.preventDefault(); last?.focus();
-      } else if (!event.shiftKey && document.activeElement === last) {
-        event.preventDefault(); menu.focus();
-      }
-    });
-  }
-
   const cards = Array.from(document.querySelectorAll('[data-gallery]'));
   const dialog = document.querySelector('.home-lightbox');
   const image = dialog?.querySelector('.home-lightbox-image');

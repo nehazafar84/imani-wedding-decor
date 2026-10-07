@@ -8,4 +8,4 @@ Use the same six WebP filenames to replace every occurrence on the homepage and 
 
 After all concepts have been replaced, update the visible concept notes and photo-credits.html. Do not present a concept as a real client event. The image-manifest.json records dimensions and original generation prompts.
 
-Slots: olive-arches = hero and gallery; ivory-stage = weddings and gallery; mehndi-colour = celebrations and gallery; reception-tables = reception and gallery; candle-detail = dark details section and gallery; garden-ceremony = gallery and story.
+Slots: olive-arches = homepage hero, décor hero, local landing page heroes, full venue package and galleries; ivory-stage = weddings, package/enquiry heroes, statement package and galleries; mehndi-colour = celebrations, décor overview and galleries; reception-tables = reception, inspiration hero, coordinated package and galleries; candle-detail = dark homepage details section and galleries; garden-ceremony = galleries, homepage story and About hero. Supporting page hero backgrounds are declared in public-site.css.
