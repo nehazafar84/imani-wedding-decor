@@ -169,7 +169,7 @@
   .home-editorial .home-hero h1{font-size:clamp(56px,13.5vw,88px);line-height:1;letter-spacing:-.04em;max-width:570px;text-wrap:balance}
   .home-hero-copy{font-size:14px;max-width:300px;margin-top:24px;line-height:1.85}
   .home-hero-actions{align-items:flex-start;flex-direction:column;gap:18px;margin-top:25px}
-  .home-button{padding:17px 22px;font-size:9px;min-height:54px}
+  .home-button{padding:17px 22px;font-size:10px;min-height:54px}
   .home-link{font-size:10px;padding:9px 0;gap:24px}
   .home-hero-footer{left:7vw;right:7vw;bottom:23px;padding-top:18px;font-size:6px;letter-spacing:.12em;gap:20px}
   .home-hero-footer>span{max-width:160px;line-height:1.8}
@@ -240,8 +240,8 @@
   .home-editorial .footer-bottom span{margin-top:0;display:inline}
   .home-editorial .floating-whatsapp{display:none}
   .home-editorial .mobile-conversion-bar{background:rgba(248,245,239,.97);border-top:1px solid #d6c8b1;box-shadow:0 -3px 25px rgba(30,23,14,.06);gap:8px;padding:9px 10px calc(9px + env(safe-area-inset-bottom))}
-  .home-editorial .mobile-conversion-bar a{min-height:46px;border:1px solid #c1ae8f;color:#574732;font-size:9px;letter-spacing:0;gap:9px}
+  .home-editorial .mobile-conversion-bar a{min-height:46px;border:1px solid #c1ae8f;color:#574732;font-size:11px;letter-spacing:0;gap:9px}
   .home-editorial .mobile-conversion-bar a.primary{background:#2e2922;color:#f8f5ef;border-color:#2e2922}
 }
-@media(max-width:360px){.home-editorial .home-hero h1{font-size:50px}.home-hero{min-height:670px}.home-hero .home-kicker{font-size:6px}.home-foundations{font-size:8px;gap:8px}.home-collection-caption h3{font-size:25px}.home-editorial .mobile-conversion-bar a{font-size:8px;gap:5px}}
+@media(max-width:360px){.home-editorial .home-hero h1{font-size:50px}.home-hero{min-height:670px}.home-hero .home-kicker{font-size:6px}.home-foundations{font-size:8px;gap:8px}.home-collection-caption h3{font-size:25px}.home-editorial .mobile-conversion-bar a{font-size:10px;gap:5px}}
 @media(prefers-reduced-motion:reduce){.home-editorial{scroll-behavior:auto}.home-editorial *{animation:none!important;transition:none!important}.home-editorial img{transform:none!important}html:has(.home-editorial){scroll-behavior:auto}}
