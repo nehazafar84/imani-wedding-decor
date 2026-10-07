@@ -3,29 +3,23 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#1d1916">
+  <meta name="theme-color" content="#f3f0e7">
   <meta name="description" content="Visualise your Imani Events wedding décor inside three South Wales venue references.">
   <title>Venue Visualiser | Imani Events</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="inner.css">
   <link rel="stylesheet" href="visualiser.css?v=3">
   <link rel="stylesheet" href="visualiser-styling.css?v=6">
-</head>
-<body class="inner-page visualiser-page">
+<link rel="icon" href="assets/favicon.png" type="image/png"><link rel="stylesheet" href="mobile-conversion.css" data-mobile-conversion><link rel="stylesheet" href="public-site.css?v=2"></head>
+<body class="inner-page visualiser-page public-site"><a class="public-skip" href="#main">Skip to content</a>
   <div class="inner-header visualiser-header">
-    <header class="site-header">
-      <a class="brand" href="index.html" aria-label="Imani Events home"><span class="brand-mark">IE</span><span>IMANI EVENTS</span></a>
-      <button class="menu-toggle" type="button" aria-label="Open menu" aria-expanded="false"><span></span><span></span></button>
-      <nav class="main-nav" aria-label="Main navigation">
-        <a href="services.html">Décor</a><a href="gallery.html">Our Work</a><a href="about.html">About</a><a href="visualiser.html" aria-current="page">Visualise</a><a href="packages.html">Hire & Packages</a><a class="nav-cta" href="quote.html">Get a Quote</a>
-      </nav>
-    </header>
+    <header class="site-header" id="top"><a class="brand" href="index.html" aria-label="Imani Events home"><span class="brand-wordmark">IMANI<small>EVENTS · BEAUTIFULLY PERSONAL</small></span></a><button class="menu-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="siteNavigation"><span></span><span></span></button><nav class="main-nav" id="siteNavigation" aria-label="Main navigation"><a href="index.html">Home</a><a href="services.html">Décor</a><a href="gallery.html">Inspiration</a><a href="about.html">Our story</a><a href="packages.html">Hire & packages</a><a aria-current="page" href="visualiser.html">Visualise</a><a class="nav-cta" href="quote.html">Discuss your day <span aria-hidden="true">↗</span></a></nav></header>
   </div>
 
-  <main>
+  <main id="main">
     <section class="visualiser-intro">
       <div class="wrap">
         <p class="eyebrow dark">A first feeling, made visible</p>
@@ -63,10 +57,10 @@
       <aside class="visualiser-controls" aria-label="Visualiser controls">
         <div class="control-group"><div class="control-heading"><span>01</span><div><h2>Choose a venue</h2><p>Start with the room that feels right.</p></div></div><div class="option-grid venue-options" id="venueOptions"></div></div>
         <div class="control-group preset-control"><div class="control-heading"><span>02</span><div><h2>Choose a starting look</h2><p>Load a balanced look, or select your own stage below.</p></div></div><div class="style-presets" id="stylePresets" aria-label="Curated style presets"></div></div>
-        <div class="control-group"><div class="control-heading"><span>03</span><div><h2>Choose a stage</h2><p>The stage is always placed first, safely inside this venue.</p></div></div><div class="option-grid design-options" id="stageOptions"></div></div>
-        <div class="control-group progressive-control" id="aisleControl"><div class="control-heading"><span>04</span><div><h2>Add an aisle</h2><p>Optional, perspective-balanced and connected to the stage edge.</p></div></div><div class="quick-aisle-options" id="quickAisleOptions"></div></div>
-        <div class="control-group progressive-control" id="centrepieceControl"><div class="control-heading"><span>05</span><div><h2>Add centrepieces</h2><p>Guest tables stay clear of the aisle, stage and feature furniture.</p></div></div><div class="option-grid design-options" id="centrepieceOptions"></div></div>
-        <div class="control-heading progressive-control" id="detailsHeading"><span>06</span><div><h2>Refine the design</h2><p>The system chooses the most natural placement automatically.</p></div></div>
+        <div class="control-group"><div class="control-heading"><span>03</span><div><h2>Choose a stage</h2><p>Choose the focal point for your celebration.</p></div></div><div class="option-grid design-options" id="stageOptions"></div></div>
+        <div class="control-group progressive-control" id="aisleControl"><div class="control-heading"><span>04</span><div><h2>Add an aisle</h2><p>Add a beautiful path to your ceremony.</p></div></div><div class="quick-aisle-options" id="quickAisleOptions"></div></div>
+        <div class="control-group progressive-control" id="centrepieceControl"><div class="control-heading"><span>05</span><div><h2>Add centrepieces</h2><p>Bring your chosen feeling to every guest table.</p></div></div><div class="option-grid design-options" id="centrepieceOptions"></div></div>
+        <div class="control-heading progressive-control" id="detailsHeading"><span>06</span><div><h2>Refine the design</h2><p>Make the look your own with colours, lighting and finishing touches.</p></div></div>
         <div class="design-mode progressive-control" id="designMode" aria-label="Design detail level"><button type="button" class="is-selected" data-mode="essential">Essential</button><button type="button" data-mode="full">Full Design</button></div>
         <div id="stylingOptions"></div>
         <button class="btn btn-quiet comparison-add" type="button" id="compareDesigns" disabled>+ Add to comparison</button><div class="visualiser-actions"><button class="btn btn-quiet" id="resetDesign" type="button">Reset</button><button class="btn btn-dark" id="saveDesign" type="button">♡ Save design</button><a class="btn btn-gold" id="quoteDesign" href="quote.html">Request booking <span>→</span></a><p class="visualiser-note" id="visualiserNote" role="status" aria-live="polite">Save your concept to receive a unique design reference.</p></div>
@@ -78,8 +72,14 @@
   </main>
 
   <div class="visualiser-sticky-actions"><button class="btn btn-quiet" id="viewResult" type="button">View result ↑</button><button class="btn btn-dark" id="stickySave" type="button">♡ Save</button><a class="btn btn-gold" id="stickyQuote" href="quote.html">Request booking</a></div>
-  <footer class="site-footer"><div class="footer-brand"><span class="brand-mark">IE</span><div><strong>IMANI EVENTS</strong><small>Wedding Décor & Event Styling</small></div></div><div class="footer-links"><a href="services.html">Décor</a><a href="gallery.html">Gallery</a><a href="about.html">About</a><a href="packages.html">Hire & Packages</a><a href="quote.html">Get a Quote</a></div><div class="footer-bottom"><span data-setting="business_location">Cardiff · South Wales · South West</span><span>© <span id="year"></span> Imani Events</span></div></footer>
+  <footer class="site-footer public-footer">
+  <div class="public-footer-top"><a class="brand" href="index.html" aria-label="Imani Events home"><span class="brand-wordmark">IMANI<small>EVENTS · BEAUTIFULLY PERSONAL</small></span></a><p>For the moments<br><em>that matter.</em></p><a class="public-text-link" href="quote.html">Begin your story <span aria-hidden="true">↗</span></a></div>
+  <nav class="footer-links" aria-label="Footer navigation"><a href="index.html">Home</a><a href="services.html">Décor</a><a href="gallery.html">Inspiration</a><a href="about.html">Our story</a><a href="packages.html">Hire & packages</a><a href="visualiser.html">Visualise</a><a href="quote.html">Discuss your day</a></nav>
+  <div class="footer-contact" aria-label="Contact Imani Events"><a href="https://wa.me/447967962340" target="_blank" rel="noopener"><span>LET’S TALK</span><strong>WhatsApp — +44 7967 962340</strong></a><a href="mailto:info@imanievents.co.uk"><span>WRITE TO US</span><strong>info@imanievents.co.uk</strong></a><a href="https://www.instagram.com/imanieventsuk/" target="_blank" rel="noopener"><span>MORE INSPIRATION</span><strong>Instagram ↗</strong></a></div>
+  <p class="public-photo-note">Décor concepts are AI-created and marked as inspiration. Real event photographs will replace the concepts. <a href="photo-credits.html">About the images ↗</a></p>
+  <div class="footer-bottom"><span data-setting="business_location">Cardiff · South Wales · The South West</span><span>© <span id="year"></span> IMANI EVENTS</span><a class="footer-owner-login" href="admin-login.html" aria-label="Sign in to the Imani Events owner portal">Owner portal</a></div>
+</footer>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0"></script>
-  <script src="site-settings.js"></script><script src="script.js"></script><script src="visualiser-styling.js?v=6"></script><script src="visualiser-v2.js?v=6"></script>
-</body>
+  <script src="site-settings.js"></script><script src="script.js?v=7"></script><script src="visualiser-styling.js?v=6"></script><script src="visualiser-v2.js?v=6"></script>
+<script src="public-site.js?v=2"></script></body>
 </html>

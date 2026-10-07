@@ -31,7 +31,7 @@ if (!document.querySelector('link[data-mobile-conversion]')) {
   document.head.appendChild(css);
 }
 
-if (!document.body.classList.contains('admin-body') && !document.querySelector('.mobile-conversion-bar')) {
+if (!document.body.classList.contains('admin-body') && !document.body.classList.contains('public-site') && !document.querySelector('.mobile-conversion-bar')) {
   const bar = document.createElement('div');
   bar.className = 'mobile-conversion-bar';
   bar.setAttribute('aria-label', 'Quick actions');
